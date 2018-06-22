@@ -1,0 +1,352 @@
+//created on: Jun 20, 2018
+package com.sample
+
+//list any import classes here.
+
+import com.sbnz.sbnzproject.model.*;
+import java.util.*;
+
+//first group of diseases
+//there have to be at least 4 symptoms, we are looking for a priority depending on
+//number of satisfied symptoms, disease which satisfied all the symptoms is more likely
+//disease 
+//prehlada
+rule "Cold"
+	no-loop
+	lock-on-active true
+	salience ($sdc.salience)
+	when
+		$d : Disease( name == "cold" )
+		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
+		$sdc : SalienceDiseaseChecker( $s : salience>=4 ) from accumulate(
+			$symptom : Symptom (
+				name == "nose leakage" ||
+				name == "pain in the throat" ||
+				name == "headache" ||
+				name == "sneeze" ||
+				name == "cough"
+			) from $symptoms,		
+            init(SalienceDiseaseChecker $salCheck = new SalienceDiseaseChecker(5);),
+            action($salCheck.addSymptom();),
+            result($salCheck)
+			
+		)
+	then
+		modify($mr) {setDisease($d);} 
+		System.out.println("COLD: satisfied " + $sdc.getSalience() + " symptoms.");
+end
+
+//sinusna infekcija ali bez specijalnih uslova
+rule "Sinus infection without special conditions"
+	no-loop
+	lock-on-active true
+	salience ($sdc.salience)
+	when
+		$d : Disease( name == "sinus infection" )
+		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
+		$sdc : SalienceDiseaseChecker( $s : salience>=4 ) from accumulate(
+			$symptom : Symptom (
+				name == "swelling around the eyes" ||
+				name == "headache" ||
+				name == "yellow secretion from nose" ||
+				name == "pain in the throat" ||
+				name == "temperature more than 38" ||
+				name == "cough"
+				
+			) from $symptoms,			
+            init(SalienceDiseaseChecker $salCheck = new SalienceDiseaseChecker(6);),
+            action($salCheck.addSymptom();),
+            result($salCheck)
+			
+		)
+	then
+		modify($mr) {setDisease($d);} 
+		System.out.println("SINUS INFECTION MINUS SPECIAL COND: satisfied " + $sdc.getSalience() + " out of " + $sdc.getMaxSymptomNum() + " symptoms.");
+end
+
+
+//groznica
+rule "Fever"
+	no-loop
+	lock-on-active true
+	salience ($sdc.salience)
+	when
+		$d : Disease( name == "fever" )
+		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
+		$sdc : SalienceDiseaseChecker( $s : salience>=4 ) from accumulate(
+			$symptom : Symptom (
+				name == "nose leakage" ||
+				name == "pain in the throat" ||
+				name == "headache" ||
+				name == "sneeze" ||
+				name == "cough" ||
+				name == "trembling" ||
+				name == "temperature more than 38"
+			) from $symptoms,		
+            init(SalienceDiseaseChecker $salCheck = new SalienceDiseaseChecker(7);),
+            action($salCheck.addSymptom();),
+            result($salCheck)
+		)
+	then
+		modify($mr) {setDisease($d);} 
+		System.out.println("FEVER: satisfied " + $sdc.getSalience() + " out of " + $sdc.getMaxSymptomNum() + " symptoms.");
+end
+
+//upala krajnika
+rule "Tonsillitis"
+	no-loop
+	lock-on-active true
+	salience ($sdc.salience)
+	when
+		$d : Disease( name == "tonsillitis" )
+		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
+		$sdc : SalienceDiseaseChecker( $s : salience>=4 ) from accumulate(
+			$symptom : Symptom (
+				name == "nose leakage" ||
+				name == "pain in the throat" ||
+				name == "headache" ||
+				name == "trembling" ||
+				name == "temperature goes from 40 to 41" ||
+				name == "pain which is spreading right to the ears" ||
+				name == "loss of appetite" ||
+				name == "tiredness" ||
+				name == "yellow secretion from nose"
+				
+			) from $symptoms,			
+            init(SalienceDiseaseChecker $salCheck = new SalienceDiseaseChecker(9);),
+            action($salCheck.addSymptom();),
+            result($salCheck)
+			
+		)
+	then
+		modify($mr) {setDisease($d);} 
+		System.out.println("TONSILLITIS: satisfied " + $sdc.getSalience() + " out of " + $sdc.getMaxSymptomNum() + " symptoms.");
+end
+
+
+//sinusna infekcija sa specijalnim uslovima
+rule "Sinus infection with special conditions"
+	no-loop
+	lock-on-active true
+	salience ($sdc.getSalienceSinusInfectionSpecial())
+	when
+		$d : Disease( name == "sinus infection" )
+		$cold : Disease( name == "cold" )
+		$fever : Disease( name == "fever" )
+		$patient : Patient(  $patientHistory : patientHistory )
+		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
+		
+		
+		Number(intValue >= 1) from accumulate (
+			$oldDiag: MedicalRecord( disease == $cold  || disease == $fever, last60Days() ) from $patientHistory,
+			init(int count = 0;),
+			action(count++;),
+			result(count)
+		)
+		
+		//special satisfied, now we need 3 more symptoms to conclude that it
+		//is a sinus infection
+		$sdc : SalienceDiseaseCheckerSinInf( $s : salience>=3 ) from accumulate(
+			$symptom : Symptom (
+				name == "swelling around the eyes" ||
+				name == "headache" ||
+				name == "yellow secretion from nose" ||
+				name == "pain in the throat" ||
+				name == "temperature more than 38" ||
+				name == "cough"
+				
+			) from $symptoms,			
+            init(SalienceDiseaseCheckerSinInf $salCheck = new SalienceDiseaseCheckerSinInf(7);),
+            action($salCheck.addSymptom();),
+            result($salCheck)
+			
+		)
+	then
+		modify($mr) {setDisease($d);} 
+		System.out.println("SINUS INFECTION PLUS SPECIAL COND: satisfied " + $sdc.getSalienceSinusInfectionSpecial() + " out of " + $sdc.getMaxSymptomNum() + " symptoms.");
+end
+
+
+//second group of diseases
+
+rule "Hypertension"
+	no-loop
+	lock-on-active
+	when
+		// checking for a hypertension
+		$d: Disease(name == "hypertension")
+		$patient: Patient($patientHistory: patientHistory)
+		$mr: MedicalRecord($symptoms: symptoms, disease == null)
+		
+		// getting all the symptoms from a medical record earlier than six months
+		$rightTimeSymptoms: List() from accumulate(
+			MedicalRecord(last6Months(), $currSymptoms: symptoms) from $patientHistory,
+			init(List symptomList = new ArrayList<>();),
+			action(symptomList.addAll($currSymptoms);)
+			result(symptomList)
+		)
+		// if the blood pressure was considered 10 times in the past
+		$symptomNum: Number(intValue >= 10) from accumulate(
+			Symptom(name == "high blood pressure") from $rightTimeSymptoms,
+			init(int count = 0;),
+			action(count++;),
+			result(count)
+		)
+			
+	then
+		modify($mr) {setDisease($d);}
+		System.out.println("Person suffering from hypertension, clue: in the last six months the blood pressure was considered as high even " + $symptomNum + " times.");
+end
+
+
+rule "Diabetes"
+    no-loop
+	lock-on-active true
+    when
+        $d : Disease( name == "diabetes")
+		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
+		Number(intValue >=4) from accumulate(
+            $symptom: Symptom(
+            	name == "often urinating"	||
+            	name == "loss of body weight" 	||
+            	name == "tiredness"	 ||
+            	name == "nausea and vomiting" 	  		 		  		 	
+            ) from $symptoms,
+            init(int count = 0;),
+            action(count++;),
+            result(count)
+        )
+				
+	then
+		modify($mr) {setDisease($d);}
+		System.out.println("Person suffering from diabetes.");
+
+end
+
+
+//third group of diseases
+
+
+rule "Acute kidney injury"
+	when
+		$d: Disease(name == "acute kidney injury")
+		$patient : Patient(  $patientHistory : patientHistory )
+		$mr: MedicalRecord($symptoms: symptoms, disease == null)
+			
+		// need 2 of the regular symptoms to be satisfied
+		Number(intValue >= 2) from accumulate(
+			Symptom(name == "tiredness"
+				 || name == "choking"
+				 || name == "legs and joints swelling"
+				 || name == "diarrhea") from $symptoms,
+			init(int count = 0;),
+			action(count++;),
+			result(count)
+		)
+		and 
+		(// does person recovering from a surgery
+            ( 
+                Number(intValue >= 1) from accumulate(
+                			Symptom(name == "recovery from surgery") from $symptoms,
+                			init(int count = 0;),
+                			action(count++;),
+                			reverse(count--;),
+                			result(count)
+                		)
+            )            
+            or (
+            //in the past 14 days, person suffering from a disease which have high
+            //temperature for a symptom
+				// getting symptoms in the past 14 days
+				$past14DaysSymptoms: List() from accumulate(
+					MedicalRecord(last14Days(), $pasDis: disease != null) from $patientHistory,
+					init(List pasSymps = new ArrayList<>(); ),
+					action(pasSymps.addAll($pasDis.getSymptoms());),
+					result(pasSymps)
+				)
+				and
+            	// does any of the symptoms is high body temperature
+				Number(intValue >= 1) from accumulate(
+					Symptom(name == "temperature more than 38"
+					     || name == "temperature goes from 40 to 41") from $past14DaysSymptoms,
+					init(int count = 0;),
+					action(count++;),
+					result(count)
+				)
+            )		
+            or
+            // or the person has been taking antibiotics in the last 21 days
+            (
+            	// searching for all medicines
+            	$past: List() from accumulate(
+            		MedicalRecord(last21Days(), disease != null, $pastDrugs: medicine) from $patientHistory,
+            		init(List pastDrugs = new ArrayList<>();),
+            		action(pastDrugs.addAll($pastDrugs);),
+            		result(pastDrugs)
+            	)
+            	and
+            	// does any of medicines is antibiotic
+            	Number(intValue >= 1) from accumulate(
+            		Medicine(name == "antibiotic") from $past,
+            		init(int count = 0;),
+            		action(count++;),
+            		result(count)
+            	)
+            
+            ) 
+            
+		)	
+	
+	then
+		modify($mr) {setDisease($d);}
+		System.out.println("Person suffering from acute kidney injury.");	
+end
+
+
+
+rule "Chronic kidney disease"
+	when
+		$d: Disease(name == "chronic kidney disease")
+		$hypertension: Disease(name == "hypertension")
+		$diabetes: Disease(name == "diabetes")
+		$patient: Patient($patientHistory: patientHistory)
+		$mr: MedicalRecord($symptoms: symptoms, disease == null)
+		
+		// need 2 of the regular symptoms to be satisfied
+		Number(intValue >= 2) from accumulate(
+			Symptom(name == "tiredness"
+				 || name == "nocturia"
+				 || name == "legs and joints swelling"
+				 || name == "choking"
+				 || name == "chest pain") from $symptoms,
+			init(int count = 0;),
+			action(count++;),
+			result(count)
+		
+		)
+		and
+		// does person have hypertension or diabetes
+		(
+			//checking for hypertension, condition: suffering more then 6 months
+			Number(intValue >= 1) from accumulate(
+				MedicalRecord(moreThan6Months(), disease == $hypertension) from $patientHistory,
+				init(int count = 0;),
+				action(count++;),
+				result(count)		
+			)
+			or 
+			// checking for diabetes
+			Number(intValue >= 1) from accumulate(
+				MedicalRecord(disease == $diabetes) from $patientHistory,
+				init(int count = 0;),
+				action(count++;),
+				result(count)
+			)
+		)
+		
+	then
+		modify($mr) {setDisease($d);}
+		System.out.println("Person suffering from chronic kidney disease.");
+end
+
+
