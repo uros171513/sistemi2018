@@ -31,4 +31,8 @@ export class PatientService {
   getAddicts():Observable<Patient[]>{
     return this.http.get<Patient[]>("http://localhost:8000/api/patient/addicts");
   }
+
+  getWithWeakImmunity():Observable<Patient[]>{
+    return this.http.get<Patient[]>("http://localhost:8000/api/patient/weakImmunity");
+  }
 }

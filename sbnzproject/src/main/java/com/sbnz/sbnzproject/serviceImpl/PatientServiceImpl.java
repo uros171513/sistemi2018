@@ -162,5 +162,42 @@ public class PatientServiceImpl implements PatientService {
 		release(kieSession);
 		return foundPatients;
 	}
+	
+
+	@Override
+	public ArrayList<Patient> getWithWeakImmunity(String username) {
+
+		KieSession kieSession = SbnzprojectApplication.kieSessions.get("kieSession-"+username);
+		System.err.println("sesija "+kieSession);
+		if(kieSession==null) {
+			KieServices ks = KieServices.Factory.get();
+			KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+			kbconf.setOption(EventProcessingOption.STREAM);
+			KieBase kbase = kieContainer.newKieBase(kbconf);
+			kieSession = kbase.newKieSession();
+		}
+		
+		List<Patient> patients=patientRepository.findAll();
+		for(Patient p:patients) {
+			kieSession.insert(p);
+		}
+		kieSession.insert(new DateChecker());
+
+		QueryResults results = kieSession.getQueryResults( "weak immunity" );
+		System.out.println( "we have " + results.size());
+
+		ArrayList<Patient> foundPatients=new ArrayList<>();
+		for ( QueryResultsRow row : results ) {
+		 	Patient p = ( Patient ) row.get( "p" );
+		 	Collection<Medicine> med=(Collection<Medicine>) row.get("medicinesList");
+		 	System.err.println("medlist "+med.size());
+		 	Collection<Medicine> ant=(Collection<Medicine>) row.get("antibioticsList");
+		 	System.err.println("antlist "+ant.size());
+		 	
+			foundPatients.add(p);
+		}
+		release(kieSession);
+		return foundPatients;
+	}
 
 }

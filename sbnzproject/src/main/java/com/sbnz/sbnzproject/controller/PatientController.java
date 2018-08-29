@@ -103,4 +103,12 @@ public class PatientController {
 		//System.err.println(patients.size());
 		return new ResponseEntity<>(patients, HttpStatus.OK);
 	}
+	
+	@GetMapping(value = "/patient/weakImmunity", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getWithWeakImmunity(HttpServletRequest request) {
+		User user=getUser(request);
+		ArrayList<Patient> patients = patientService.getWithWeakImmunity(user.getUsername());
+		//System.err.println(patients.size());
+		return new ResponseEntity<>(patients, HttpStatus.OK);
+	}
 }

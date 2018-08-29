@@ -1,9 +1,15 @@
 <br>
+<br>
+<br>
 <div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
+    <div class="col-md-12">
+            <h1 style="color:black; border:black; text-align: center">Patient: <em>~ {{patient.lastName}} {{patient.name}} ~</em></h1> 
+    </div>       
+</div>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
         <br>
-          <h2 style="" >Patient: <em>~ {{patient.lastName}} {{patient.name}} ~</em></h2> 
           <br>
           <button class="btn btn-info" (click)="openModal(template)">Add New Session</button>
           <br><br>
@@ -11,10 +17,65 @@
 </div>
 
 <div class="row">
-  <div class="col-md-3"></div>
-  <div class="col-md-6">
+    <div class="col-md-2"></div>
+    <div class="col-md-4">
+        <br>
+        <h3 style="text-decoration-line: underline;"><em>Allergies</em></h3> 
+        <br>        
+      <div>
+          <h5 style="color: rgb(100, 00, 50)">Medicines</h5> 
+        <table class="table" *ngIf="patient">
+            <thead>
+                <tr>
+                    <th style="color: rgb(100, 00, 50)">No</th>
+                    <th style="color: rgb(100, 00, 50)">Name</th>
+                </tr>
+              </thead>
+  
+              <tbody>
+                <tr *ngFor="let ma of patient.medicineAllergies; let i=index">
+                    <td>{{i+1}}</td>
+                    <td>{{ma.name}}</td>
+                </tr>
+              </tbody>
+        </table>
+  
+      </div>
+    </div>
+        <div class="col-md-4">
+        <br>
+        <h3 style="color:white">Allergies</h3> 
+        <br>        
+      <div>
+          <h5 style="color: rgb(100, 00, 50)">Components</h5> 
+        <table class="table" *ngIf="patient">
+            <thead>
+                <tr>
+                  <th style="color: rgb(100, 00, 50)">No</th>
+                  <th style="color: rgb(100, 00, 50)">Name</th>
+                </tr>
+              </thead>
+  
+              <tbody>
+                <tr *ngFor="let ca of patient.componentAllergies; let i=index">
+                    <td>{{i+1}}</td>
+                    <td>{{ca.name}}</td>
+                </tr>
+              </tbody>
+        </table>
+  
+      </div>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+<br>
+<br>
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
     <div>
-        <h5 style="color: rgb(100, 00, 50)">Medical Records</h5> 
+        <h3 style="text-decoration: underline"><em>Medical Records</em></h3> 
+        <br>
       <table class="table" *ngIf="patient">
           <thead>
               <tr>
@@ -41,58 +102,7 @@
   <div class="col-md-1"></div>
 </div>
 
-<div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-3">
-        <br>
-        <h4 style="text-decoration-line: underline;"><em>Allergies</em></h4> 
-        <br>        
-      <div>
-          <h5 style="color: rgb(100, 00, 50)">Medicines</h5> 
-        <table class="table" *ngIf="patient">
-            <thead>
-                <tr>
-                    <th style="color: rgb(100, 00, 50)">No</th>
-                    <th style="color: rgb(100, 00, 50)">Name</th>
-                </tr>
-              </thead>
-  
-              <tbody>
-                <tr *ngFor="let ma of patient.medicineAllergies; let i=index">
-                    <td>{{i+1}}</td>
-                    <td>{{ma.name}}</td>
-                </tr>
-              </tbody>
-        </table>
-  
-      </div>
-    </div>
-        <div class="col-md-3">
-        <br>
-        <h4 style="color:white">Allergies</h4> 
-        <br>        
-      <div>
-          <h5 style="color: rgb(100, 00, 50)">Components</h5> 
-        <table class="table" *ngIf="patient">
-            <thead>
-                <tr>
-                  <th style="color: rgb(100, 00, 50)">No</th>
-                  <th style="color: rgb(100, 00, 50)">Name</th>
-                </tr>
-              </thead>
-  
-              <tbody>
-                <tr *ngFor="let ca of patient.componentAllergies; let i=index">
-                    <td>{{i+1}}</td>
-                    <td>{{ca.name}}</td>
-                </tr>
-              </tbody>
-        </table>
-  
-      </div>
-    </div>
-    <div class="col-md-1"></div>
-  </div>
+
 
   <ng-template #template>
       <div id="editAnnModal" style="align-self: center; align-content: center; width:60em" class="modal-content">

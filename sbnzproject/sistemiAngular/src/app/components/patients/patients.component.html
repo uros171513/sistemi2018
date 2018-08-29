@@ -1,9 +1,15 @@
 <br>
+<br>
+<br>
 <div class="row">
-  <div class="col-md-4"></div>
-  <div class="col-md-4">
+    <div class="col-md-12">
+            <h1 style="color:black; border:black; text-align: center"><em>List of Patients</em></h1> 
+    </div>       
+</div>
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
     <br>
-      <h2 style="color:rgb(104, 99, 99); border:black">List of Patients</h2> 
       <br>
     <div>
       <button class="btn btn-info" (click)="openModal(template)">Add New Patient</button>
@@ -11,10 +17,11 @@
       <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Get patients using resoner:</b></p>
       <button class="btn btn-info" (click)="withChronic()" style=" margin-right:10px">With chronic disease</button>
       <button class="btn btn-info" (click)="getAddicts()" style=" margin-right:10px">Addicts</button>
-      <button class="btn btn-info" (click)="openModal(template)" style=" margin-right:10px">Weak immunity</button>
+      <button class="btn btn-info" (click)="getWithWeakImmunity()" style=" margin-right:10px">Weak immunity</button>
       <br><br>
       <div *ngIf="allowAddicts">
-        <h4 style="color:rgb(100, 00, 50)">Addicts</h4>
+        <h4 style="color:rgb(100, 00, 50)"><em>Addicts</em></h4>
+        <br>
         <table class="table">
             <thead>
                 <tr>
@@ -34,7 +41,8 @@
         </table>
   </div>
       <div *ngIf="allowChronic">
-            <h4 style="color:rgb(100, 00, 50)">With chronic disease</h4>
+            <h4 style="color:rgb(100, 00, 50)"><em>With chronic disease</em></h4>
+            <br>
             <table class="table">
                 <thead>
                     <tr>
@@ -54,8 +62,31 @@
             </table>
       </div>
 
+      <div *ngIf="allowWeak">
+        <h4 style="color:rgb(100, 00, 50)"><em>With weak immunity</em></h4>
+        <br>
+        <table class="table">
+            <thead>
+                <tr>
+                  <th style="color:rgb(100, 00, 50)">Name</th>
+                  <th style="color:rgb(100, 00, 50)">Lastname</th>
+                  <th></th>
+                </tr>
+              </thead>
+  
+              <tbody>
+                <tr *ngFor="let patient of weakImmunity; let i=index">
+                    <td>{{patient.name}}</td>
+                    <td>{{patient.lastName}}</td>
+                    <td><button class="btn btn-info" (click)="go(patient.id)">Go</button></td>
+                </tr>
+              </tbody>
+        </table>
+  </div>
+
       <br>
-        <h4 style="color:rgb(100, 00, 50)">Patients</h4>
+        <h4 style="color:rgb(100, 00, 50)"><em>Patients</em></h4>
+        <br>
       <table class="table" *ngIf="patients">
           <thead>
               <tr>

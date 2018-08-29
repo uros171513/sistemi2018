@@ -29,6 +29,7 @@ export class PatientsComponent implements OnInit {
 
   chronic:Patient[]=[];
   addicts:Patient[]=[];
+  weakImmunity:Patient[]=[];
   modalRef: BsModalRef;
 
   medicines:Medicine[];
@@ -56,6 +57,7 @@ export class PatientsComponent implements OnInit {
 
   allowChronic:boolean=false;
   allowAddicts:boolean=false;
+  allowWeak:boolean=false;
 
   constructor(private patientService:PatientService,
   private medicineService:MedicineService,
@@ -67,6 +69,7 @@ export class PatientsComponent implements OnInit {
     
     this.allowChronic=false;
     this.allowAddicts=false;
+    this.allowWeak=false;
     this.patientService.getAllPatients().subscribe(data=>{
       this.patients=data;
     });
@@ -105,6 +108,7 @@ export class PatientsComponent implements OnInit {
   refresh(){
     this.allowChronic=false;
     this.allowAddicts=false;
+    this.allowWeak=false;
     this.realSelectedComponents=[];
     this.selectedComponents=[];
     this.realSelectedMedicines=[];
@@ -143,6 +147,7 @@ export class PatientsComponent implements OnInit {
     
     this.allowChronic=false;
     this.allowAddicts=false;
+    this.allowWeak=false;
     this.patientService.getPatient(patientId).subscribe(data=>{
       this.router.navigate(['patient/',data['id']]);
     })
@@ -206,4 +211,11 @@ export class PatientsComponent implements OnInit {
     });
   }
 
+  getWithWeakImmunity(){
+    this.weakImmunity=[];
+    this.allowWeak=true;
+    this.patientService.getWithWeakImmunity().subscribe(data=>{
+      this.weakImmunity=data;
+    });
+  }
 }

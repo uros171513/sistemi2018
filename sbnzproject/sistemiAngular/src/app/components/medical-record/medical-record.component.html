@@ -1,31 +1,34 @@
 <br>
+<br>
+<br>
 <div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
-        <br>
-          <h2> <em>~ Medical Record ~</em></h2> 
-          <br>
-          <br><br>
-          
-    </div>
+    <div class="col-md-12">
+            <h1 style="color:black; border:black; text-align: center"><em> Medical Record </em></h1> 
+    </div>       
+    
 </div>
+<br><br><br>
 <div class="row">
-    <div class="col-md-3"></div>
+    <div class="col-md-2"></div>
     <div class="col-md-3">
       <div>
           <h5 style="color: rgb(100, 00, 50)">Date:<em><b style="color: black"> {{medicalRecord.date | date }}</b></em></h5> 
       </div>
     </div>
+    <div class="col-md-1"></div>
+  </div>
+<br>
+<div class="row">
+    <div class="col-md-2"></div>
     <div class="col-md-3">
         <div>
             <h5 style="color: rgb(100, 00, 50)">Disease:<em><b style="color: black"> {{medicalRecord.disease.name | uppercase}}</b></em></h5> 
         </div>
       </div>
-    <div class="col-md-1"></div>
-  </div>
+</div>
 <br>
   <div class="row">
-    <div class="col-md-3"></div>
+    <div class="col-md-2"></div>
     <div class="col-md-3">
       <div>
           <h5 style="color: rgb(100, 00, 50)">Doctor:<em><b style="color: black"> &nbsp; {{medicalRecord.doctor.name | titlecase}} &nbsp;{{ medicalRecord.doctor.lastName | titlecase}}</b></em></h5> 
@@ -36,10 +39,11 @@
   </div>
 <br><br>
   <div class="row">
-      <div class="col-md-3"></div>
+      <div class="col-md-2"></div>
       <div class="col-md-3">
         <div>
-            <h5 style="color: rgb(100, 00, 50)">Symptoms</h5> 
+            <h4 style="color: rgb(100, 00, 50)"><em>Symptoms</em></h4> 
+            <br>
           <table class="table">
               <thead>
                   <tr>
@@ -62,7 +66,8 @@
       </div>
       <div class="col-md-3">
           <div>
-              <h5 style="color: rgb(100, 00, 50)">Medicines</h5> 
+              <h4 style="color: rgb(100, 00, 50)"><em>Medicines</em></h4> 
+              <br>
             <table class="table">
                 <thead>
                     <tr>

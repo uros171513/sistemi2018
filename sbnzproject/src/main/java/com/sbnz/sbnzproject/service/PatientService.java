@@ -19,4 +19,6 @@ public interface PatientService {
 
 	ArrayList<Patient> getAddicts(String username);
 
+	ArrayList<Patient> getWithWeakImmunity(String username);
+
 }
