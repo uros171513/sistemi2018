@@ -1,0 +1,188 @@
+<br>
+<div class="row">
+  <div class="col-md-4"></div>
+  <div class="col-md-4">
+    <br>
+      <h2 style="color:rgb(104, 99, 99); border:black">List of Patients</h2> 
+      <br>
+    <div>
+      <button class="btn btn-info" (click)="openModal(template)">Add New Patient</button>
+      <br><br>
+      <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Get patients using resoner:</b></p>
+      <button class="btn btn-info" (click)="withChronic()" style=" margin-right:10px">With chronic disease</button>
+      <button class="btn btn-info" (click)="getAddicts()" style=" margin-right:10px">Addicts</button>
+      <button class="btn btn-info" (click)="openModal(template)" style=" margin-right:10px">Weak immunity</button>
+      <br><br>
+      <div *ngIf="allowAddicts">
+        <h4 style="color:rgb(100, 00, 50)">Addicts</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                  <th style="color:rgb(100, 00, 50)">Name</th>
+                  <th style="color:rgb(100, 00, 50)">Lastname</th>
+                  <th></th>
+                </tr>
+              </thead>
+  
+              <tbody>
+                <tr *ngFor="let patient of addicts; let i=index">
+                    <td>{{patient.name}}</td>
+                    <td>{{patient.lastName}}</td>
+                    <td><button class="btn btn-info" (click)="go(patient.id)">Go</button></td>
+                </tr>
+              </tbody>
+        </table>
+  </div>
+      <div *ngIf="allowChronic">
+            <h4 style="color:rgb(100, 00, 50)">With chronic disease</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th style="color:rgb(100, 00, 50)">Name</th>
+                      <th style="color:rgb(100, 00, 50)">Lastname</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+      
+                  <tbody>
+                    <tr *ngFor="let patient of chronic; let i=index">
+                        <td>{{patient.name}}</td>
+                        <td>{{patient.lastName}}</td>
+                        <td><button class="btn btn-info" (click)="go(patient.id)">Go</button></td>
+                    </tr>
+                  </tbody>
+            </table>
+      </div>
+
+      <br>
+        <h4 style="color:rgb(100, 00, 50)">Patients</h4>
+      <table class="table" *ngIf="patients">
+          <thead>
+              <tr>
+                <th style="color:rgb(100, 00, 50)">Name</th>
+                <th style="color:rgb(100, 00, 50)">Lastname</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let patient of patients; let i=index">
+                  <td>{{patient.name}}</td>
+                  <td>{{patient.lastName}}</td>
+                  <td><button class="btn btn-info" (click)="go(patient.id)">Go</button></td>
+              </tr>
+            </tbody>
+      </table>
+
+    </div>
+    
+    <div *ngIf="!patients">
+    </div>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+
+<ng-template #template>
+  <div id="editAnnModal" style="align-self: center; align-content: center; width:60em" class="modal-content">
+
+    <div class="modal-header" style="background-color:cadetblue;color:black; align-items: center">
+      <h5 class="modal-title"><em>Add New Patients</em></h5>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <form class="form" (ngSubmit) = "createPatient()" #annForm="ngForm">
+        <div class="container">
+          <br><br>
+            <div class="row">   
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+                    <div class="form-group has-danger">
+                        <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Patient Name:</b></p>
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div>
+                            <input type="text" name="name" [(ngModel)]="patient.name" class="form-control" id="name" 
+                                   placeholder="Name" required autofocus>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+                <div class="form-group has-danger">
+                    <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Patient Lastname:</b></p>
+                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                        <div>
+                        <input type="text" name="lastName" [(ngModel)]="patient.lastName" class="form-control" id="lastName" 
+                               placeholder="Lastname" required autofocus>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+
+            <div class="row">
+              
+                <div class="col-md-1"></div>
+                <div class="col-md-6">
+                    <div class="form-group has-danger">
+                        <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Select medicines that the patient allergic to:</b></p>
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <ul>
+                              <li *ngFor="let medicine of selectedMedicines; let i=index">
+                                  <input (change)="getSelectedMedicines()" type="checkbox"
+                                  name="medicines"
+                                  value="{{medicine.name}}"
+                                  [(ngModel)]="medicine.selected"/>{{medicine.medicine.name}}<br>
+
+                              </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+              
+                <div class="col-md-1"></div>
+                <div class="col-md-7">
+                    <div class="form-group has-danger">
+                        <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Select components of a medicine that the patient allergic to:</b></p>
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <ul>
+                                <li *ngFor="let component of selectedComponents; let i=index">
+                                    <input (change)="getSelectedComponents()" type="checkbox"
+                                    name="components"
+                                    value="{{component.name}}"
+                                    [(ngModel)]="component.selected"/>{{component.component.name}}<br>
+  
+                                </li>
+                              </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-8">
+                  <input id="save" style="float: right;" type="submit" class="btn btn-info" value="Add Patient"/>
+                  <br>
+                </div>
+
+            </div>
+
+          
+    </form>
+  </div>
+
+</div>
+</ng-template>

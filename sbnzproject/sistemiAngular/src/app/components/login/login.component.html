@@ -1,0 +1,55 @@
+<br>
+    <div class="container">
+      <form class="form-horizontal" name="form" id="loginForm" role="form" (ngSubmit)="login()">
+          <br>
+          <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-6" style="color:rgb(104, 99, 99); border:black">
+                  <h2>Login</h2>
+                  <hr>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-6">
+                  <div class="form-group has-danger">
+                      <p style="color:rgb(104, 99, 99)">E-mail Address</p>
+                      <label class="sr-only" for="email">E-Mail Address</label>
+                      <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                          <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-unlock-alt"></i></div>
+                          <input type="text" name="username" [(ngModel)]="username" class="form-control" id="username" 
+                                 placeholder="you@example.com" required autofocus>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <p style="color:rgb(104, 99, 99)">Password</p>
+                      <label class="sr-only" for="password">Password</label>
+                      <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                          <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-key"></i></div>
+                          <input type="password" name="password" class="form-control" id="password" [(ngModel)]="password"
+                                 placeholder="Password" required>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-3">
+                  <div class="form-control-feedback">
+                      <span class="text-danger align-middle">
+                      <!-- Put password error message here -->    
+                      </span>
+                  </div>
+              </div>
+          </div>
+
+          <div class="row" style="padding-top: 1rem">
+              <div class="col-md-3"></div>
+              <div class="col-md-6">
+                  <button type="submit" id="login" class="btn btn-primary btn-md "> Login</button>
+              </div>
+          </div>
+      </form>
+  </div>

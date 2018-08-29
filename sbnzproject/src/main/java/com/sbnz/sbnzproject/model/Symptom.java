@@ -20,6 +20,9 @@ public class Symptom {
 	@Enumerated(EnumType.STRING)
 	private SymptomType symptomType;
 	
+	@Column
+	private Boolean deleted;
+	
 	public Symptom() {
 		
 	}
@@ -48,5 +51,12 @@ public class Symptom {
 		this.symptomType = symptomType;
 	}
 
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 	
 }

@@ -30,6 +30,9 @@ public class Disease {
 	@Enumerated(EnumType.STRING)
 	private DiseaseType diseaseType;
 	
+	@Column
+	private Boolean deleted;
+	
 	public Disease() {
 		
 	}
@@ -65,7 +68,13 @@ public class Disease {
 	public void setDiseaseType(DiseaseType diseaseType) {
 		this.diseaseType = diseaseType;
 	}
-	
 
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
 	
 }

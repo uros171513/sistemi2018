@@ -1,0 +1,252 @@
+<br>
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <br>
+          <h2 style="" >Patient: <em>~ {{patient.lastName}} {{patient.name}} ~</em></h2> 
+          <br>
+          <button class="btn btn-info" (click)="openModal(template)">Add New Session</button>
+          <br><br>
+    </div>
+</div>
+
+<div class="row">
+  <div class="col-md-3"></div>
+  <div class="col-md-6">
+    <div>
+        <h5 style="color: rgb(100, 00, 50)">Medical Records</h5> 
+      <table class="table" *ngIf="patient">
+          <thead>
+              <tr>
+                <th style="color: rgb(100, 00, 50)">No</th>
+                <th>Date</th>
+                <th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let ph of patient.patientHistory; let i=index">
+                  <td>#{{i+1}}</td>
+                  <td>{{ph.date | date}}</td>
+                  <td><button class="btn btn-info" (click)="go(ph.id)">Go</button></td>
+              </tr>
+            </tbody>
+      </table>
+
+    </div>
+    
+    <div *ngIf="!patients">
+    </div>
+  </div>
+  <div class="col-md-1"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+        <br>
+        <h4 style="text-decoration-line: underline;"><em>Allergies</em></h4> 
+        <br>        
+      <div>
+          <h5 style="color: rgb(100, 00, 50)">Medicines</h5> 
+        <table class="table" *ngIf="patient">
+            <thead>
+                <tr>
+                    <th style="color: rgb(100, 00, 50)">No</th>
+                    <th style="color: rgb(100, 00, 50)">Name</th>
+                </tr>
+              </thead>
+  
+              <tbody>
+                <tr *ngFor="let ma of patient.medicineAllergies; let i=index">
+                    <td>{{i+1}}</td>
+                    <td>{{ma.name}}</td>
+                </tr>
+              </tbody>
+        </table>
+  
+      </div>
+    </div>
+        <div class="col-md-3">
+        <br>
+        <h4 style="color:white">Allergies</h4> 
+        <br>        
+      <div>
+          <h5 style="color: rgb(100, 00, 50)">Components</h5> 
+        <table class="table" *ngIf="patient">
+            <thead>
+                <tr>
+                  <th style="color: rgb(100, 00, 50)">No</th>
+                  <th style="color: rgb(100, 00, 50)">Name</th>
+                </tr>
+              </thead>
+  
+              <tbody>
+                <tr *ngFor="let ca of patient.componentAllergies; let i=index">
+                    <td>{{i+1}}</td>
+                    <td>{{ca.name}}</td>
+                </tr>
+              </tbody>
+        </table>
+  
+      </div>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+
+  <ng-template #template>
+      <div id="editAnnModal" style="align-self: center; align-content: center; width:60em" class="modal-content">
+    
+        <div class="modal-header" style="background-color:cadetblue;color:black; align-items: center">
+          <h5 class="modal-title"><em>New Session</em></h5>
+          <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+    
+        <div class="modal-body">
+          <form class="form" (ngSubmit) = "addNewSession()" #annForm="ngForm">
+            <div class="container">
+              <br><br>
+    
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <div class="form-group has-danger">
+                    <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Choose at least one of the following symptoms:</b></p>
+                    <div class="input-group mb-2 mr-sm-2 mb-sm-0">                       
+                        
+                            <div *ngFor="let ss of selectedSymptoms; let i=index; let even = even">
+                              <div *ngIf="even">
+                                  <input  (change)="getSelectedSymptoms()" type="checkbox"
+                                  name="symptoms"
+                                  value="{{selectedSymptoms[i].symptom.name}}"
+                                  [(ngModel)]="selectedSymptoms[i].selected"/>{{  selectedSymptoms[i].symptom.name | uppercase}} &nbsp;&nbsp; <input  (change)="getSelectedSymptoms()" type="checkbox"
+                                  name="symptoms"
+                                  value="{{selectedSymptoms[i+1].symptom.name}}"
+                                  [(ngModel)]="selectedSymptoms[i+1].selected"/>{{  selectedSymptoms[i+1].symptom.name | uppercase}} &nbsp;&nbsp;
+                              </div>
+                            </div>
+                          
+                    </div></div></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                      <div class="form-group has-danger">
+                          <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Related Diseases:</b></p>
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <input id="save" style="float: right;" type="button" class="btn btn-info"  (click)="getRelatedDiseases()" value="Get"/>
+                        </div>
+                        <br>
+                        <div class="row" *ngIf="relatedDiseases.length!=0">
+                              <ul>
+                                <li *ngFor="let d of relatedDiseases; let i=index">{{ d.name | uppercase }}</li>
+                              </ul>
+                      </div></div></div>
+                </div>
+
+                      <div class="row">
+                          <div class="col-md-1"></div>
+                          <div class="col-md-10">
+                            <div class="form-group has-danger">
+                                <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Related Symptoms:</b></p>
+                              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                                  <select required class="form-control" name="userRole" [(ngModel)]="choosenDisease.name" id="role" #userRole="ngModel">
+                                      <option *ngFor="let d of allDiseases" value="{{d.name}}">{{d.name}}</option>
+                                  </select>  
+                                  <input id="save" style="float: right; margin-right:10px" type="button" (click)="symptomsByDisease()" class="btn btn-info" value="Get all"/>
+                              </div>  
+                              
+                        <br>
+                        <div class="row" *ngIf="relatedSymptoms.length!=0">
+                              <ul>
+                                <li *ngFor="let s of relatedSymptoms; let i=index">{{ s.name | uppercase }}</li>
+                              </ul>
+                      </div>      
+                            </div></div></div>
+             
+
+                <div class="row">
+                  <div class="col-md-1"></div>
+                  <div class="col-md-10">
+                    <div class="form-group has-danger">
+                        <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Choose one of the following options to get a diagnose:</b></p>
+                      <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                          <input id="save" style="float: right; margin-right:10px" type="button"  (click)="diseaseBySymptoms()" class="btn btn-info" value="The Most Likely Disease"/>
+                          <input id="save" style="float: right; margin-right:10px" type="button"  (click)="personalOpinion()" class="btn btn-info" value="Personal Opinion"/>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="personalOpinionBoolean">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <p style="color:rgb(104, 99, 99);text-decoration: underline;"><b>Choose one disease, then press <em>Next</em> button: </b></p>
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <select required class="form-control" name="userRole" [(ngModel)]="choosenDisease1.name" id="role" #userRole="ngModel">
+                                <option *ngFor="let d of allDiseases" value="{{d.name}}">{{d.name}}</option>
+                            </select>
+                            <input id="save" style="float: right; margin-right: 154px" type="button"  (click)="next()" class="btn btn-info" value="Next"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="medicalRecord!=null">
+                  <div class="col-md-1"></div>
+                  <div class="col-md-8">
+                    <p><b> Found disease: <em style="text-decoration: underline">{{medicalRecord.disease.name | uppercase}}</em></b></p>
+                          <p style="text-decoration: underline;"><b>Choose at least one of the following medicines:</b></p>
+                          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                                  <div *ngFor="let ss of selectedMedicines; let i=index; let even = even">
+                                    <div *ngIf="even">
+                                        <input  (change)="getSelectedMedicines()" type="checkbox"
+                                        name="medicines"
+                                        value="{{selectedMedicines[i].medicine.name}}"
+                                        [(ngModel)]="selectedMedicines[i].selected"/>{{  selectedMedicines[i].medicine.name | uppercase}} &nbsp;&nbsp; 
+                                        <input  (change)="getSelectedMedicines()" type="checkbox"
+                                        name="medicines"
+                                        value="{{selectedMedicines[i+1].medicine.name}}"
+                                        [(ngModel)]="selectedMedicines[i+1].selected"/>{{  selectedMedicines[i+1].medicine.name | uppercase}} &nbsp;&nbsp;
+                                    </div>
+                                  </div>
+                                
+                          </div>
+                    <input id="save" style="float: right; margin-right: 154px" type="button"  (click)="setMedicines()" class="btn btn-info" value="Set medicines"/>
+                    <br>
+                  </div>
+  
+              </div> 
+
+              <div class="row" *ngIf="verifyMessage!=''">
+                  <div class="col-md-1"></div>
+                  <div class="col-md-8">
+                    <p><b>Message: {{verifyMessage}}</b></p>
+                  </div>
+  
+              </div>
+
+              <div class="row" *ngIf="noDisease!=''">
+                  <div class="col-md-1"></div>
+                  <div class="col-md-8">
+                    <p><b>Message: {{noDisease}}</b></p>
+                  </div>
+  
+              </div>
+    
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-8">
+                      <input id="save" style="float: right;" type="submit" class="btn btn-info" value="Save"/>
+                      <br>
+                    </div>
+    
+                </div> 
+            </div>
+        </form>
+      </div>
+    
+    </div>
+    </ng-template>

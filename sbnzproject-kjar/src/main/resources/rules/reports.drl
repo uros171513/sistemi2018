@@ -1,0 +1,60 @@
+//created on: Jun 20, 2018
+package com.sample
+
+//list any import classes here.
+
+import com.sbnz.sbnzproject.model.*;
+import com.sbnz.sbnzproject.model.MedicineType;
+import java.util.*;
+
+query "patients with chronic disease"
+	p : Patient($id : id, $history : patientHistory)
+	d : Disease(name != "cold", name != "fever", $dName : name)
+	list : List(size>5) from accumulate (
+		$mr : MedicalRecord(disease.name==$dName && last2Years()) from $history,
+		collectList($mr)
+	)
+end
+
+query "addicts"
+	p : Patient($id : id, $history : patientHistory)
+    $dc : DateChecker() 
+    $med1: Medicine (name == "Medicine 3", medicineType==MedicineType.ANALGETIC)
+    $med2: Medicine (name == "Medicine 4", medicineType==MedicineType.ANALGETIC)
+    recordsList : List(size>=6) from accumulate (
+		$mr : MedicalRecord($dc.last6Months()<date, medicine contains $med1 || medicine contains $med2) from $history,
+        collectList( $mr )
+    )		
+	doctorsList :Set(size>=3) from accumulate(
+		$d : MedicalRecord($doctor : doctor) from recordsList,
+		collectSet($doctor)
+	)        	
+end
+
+query "weak immunity"
+	p : Patient($id : id, $history : patientHistory)
+	$dc : DateChecker()
+	recordsList : List(size>=10) from accumulate (
+		$mr : MedicalRecord($dc.last12Months()<date) from $history,
+        collectList( $mr )
+    )
+    
+    diseasesList :Set(size>=2) from accumulate(
+		$d : MedicalRecord($disease : disease) from recordsList,
+		collectSet($disease)
+	)
+	 
+	medicinesList : List() from accumulate(
+    	$m : MedicalRecord($medicines: medicine) from recordsList,
+    	init( List list = new ArrayList(); )
+        action(list.addAll($m.getMedicine()); )
+        result( list ) )
+    
+    antibioticsList : List() from accumulate(
+    	$a : Medicine( medicineType == MedicineType.ANTIBIOTIC) from medicinesList,
+    	collectList($a)
+    )
+	eval(medicinesList.size()==antibioticsList.size())
+    
+   
+end

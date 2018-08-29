@@ -13,7 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Patient {
 	
 	@Id
@@ -29,10 +32,10 @@ public class Patient {
 	private Set<MedicalRecord> patientHistory = new HashSet<>();
 	
 	@ManyToMany(fetch = FetchType.EAGER)
-	private Set<Medicine> medicineAlergies = new HashSet<>();
+	private Set<Medicine> medicineAllergies = new HashSet<>();
 	
 	@ManyToMany(fetch = FetchType.EAGER)
-	private Set<MedicineComponent> componentAlergies = new HashSet<>();
+	private Set<MedicineComponent> componentAllergies = new HashSet<>();
 
 	public Patient() {
 		
@@ -62,7 +65,7 @@ public class Patient {
 		this.lastName = lastName;
 	}
 
-	public Collection<MedicalRecord> getPatientHistory() {
+	public Set<MedicalRecord> getPatientHistory() {
 		return patientHistory;
 	}
 
@@ -70,20 +73,20 @@ public class Patient {
 		this.patientHistory = patientHistory;
 	}
 
-	public Collection<Medicine> getMedicineAlergies() {
-		return medicineAlergies;
+	public Set<Medicine> getMedicineAllergies() {
+		return medicineAllergies;
 	}
 
-	public void setMedicineAlergies(Set<Medicine> medicineAlergies) {
-		this.medicineAlergies = medicineAlergies;
+	public void setMedicineAllergies(Set<Medicine> medicineAllergies) {
+		this.medicineAllergies = medicineAllergies;
 	}
 
-	public Collection<MedicineComponent> getComponentAlergies() {
-		return componentAlergies;
+	public Set<MedicineComponent> getComponentAllergies() {
+		return componentAllergies;
 	}
 
-	public void setComponentAlergies(Set<MedicineComponent> componentAlergies) {
-		this.componentAlergies = componentAlergies;
+	public void setComponentAllergies(Set<MedicineComponent> componentAllergies) {
+		this.componentAllergies = componentAllergies;
 	}
 	
 	

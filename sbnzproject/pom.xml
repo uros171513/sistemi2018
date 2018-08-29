@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.sbnz</groupId>
-	<artifactId>sbnzproject</artifactId>
+  	<artifactId>sbnzproject</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.3.RELEASE</version>
+		<version>1.5.14.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -22,6 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<kie.version>6.5.0.Final</kie.version>
 	</properties>
 
 	<dependencies>
@@ -37,15 +38,56 @@
 		</dependency>
 		
 		<dependency>
+        	<groupId>org.springframework.security</groupId>
+        	<artifactId>spring-security-test</artifactId>
+    	</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		
+		<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-data-rest</artifactId>
+		</dependency>
+		
+		<dependency>
+	    	<groupId>org.springframework.boot</groupId>
+	    	<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+	    	<groupId>io.jsonwebtoken</groupId>
+	    	<artifactId>jjwt</artifactId>
+	    	<version>0.7.0</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-ci</artifactId>
+			<version>${kie.version}</version>
+		</dependency>
+		
+		<dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-spring</artifactId>
+            <version>${kie.version}</version>
+        </dependency>
+        
+        <dependency>
+	  		<groupId>drools-spring-v2</groupId>
+	  		<artifactId>drools-spring-v2-kjar</artifactId>
+	  		<type>jar</type>
+	  		<version>0.0.1-SNAPSHOT</version>
+  		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -53,7 +95,21 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
+			<plugin>
+        		<artifactId>maven-compiler-plugin</artifactId>
+        		<configuration>
+            	<source>1.7</source>
+            	<target>1.7</target>
+        		</configuration>
+    		</plugin>
 		</plugins>
 	</build>
 

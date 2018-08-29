@@ -16,6 +16,9 @@ public class MedicineComponent {
 	@Column(nullable = false)
 	private String name;
 	
+	@Column
+	private Boolean deleted;
+	
 	public MedicineComponent() {
 		
 	}
@@ -34,6 +37,14 @@ public class MedicineComponent {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 
 }

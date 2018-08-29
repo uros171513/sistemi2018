@@ -1,0 +1,87 @@
+<br>
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <br>
+          <h2> <em>~ Medical Record ~</em></h2> 
+          <br>
+          <br><br>
+          
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+      <div>
+          <h5 style="color: rgb(100, 00, 50)">Date:<em><b style="color: black"> {{medicalRecord.date | date }}</b></em></h5> 
+      </div>
+    </div>
+    <div class="col-md-3">
+        <div>
+            <h5 style="color: rgb(100, 00, 50)">Disease:<em><b style="color: black"> {{medicalRecord.disease.name | uppercase}}</b></em></h5> 
+        </div>
+      </div>
+    <div class="col-md-1"></div>
+  </div>
+<br>
+  <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+      <div>
+          <h5 style="color: rgb(100, 00, 50)">Doctor:<em><b style="color: black"> &nbsp; {{medicalRecord.doctor.name | titlecase}} &nbsp;{{ medicalRecord.doctor.lastName | titlecase}}</b></em></h5> 
+      </div>
+    </div>
+    <div class="col-md-3"></div>
+    <div class="col-md-1"></div>
+  </div>
+<br><br>
+  <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-3">
+        <div>
+            <h5 style="color: rgb(100, 00, 50)">Symptoms</h5> 
+          <table class="table">
+              <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Name</th>
+                  </tr>
+                </thead>
+    
+                <tbody>
+                 
+                  <tr *ngFor="let s of medicalRecord.symptoms; let i=index">
+                    <td>#{{i+1}}</td>
+                      <td style="color: rgb(100, 00, 50)">{{s.name}}</td>
+                      <td></td>
+                    </tr>
+                </tbody>
+          </table>
+    
+        </div>
+      </div>
+      <div class="col-md-3">
+          <div>
+              <h5 style="color: rgb(100, 00, 50)">Medicines</h5> 
+            <table class="table">
+                <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Name</th>
+                    </tr>
+                  </thead>
+      
+                  <tbody>
+                   
+                    <tr *ngFor="let m of medicalRecord.medicine; let i=index">
+                      <td>#{{i+1}}</td>
+                        <td style="color: rgb(100, 00, 50)">{{m.name}}</td>
+                        <td></td>
+                      </tr>
+                  </tbody>
+            </table>
+      
+          </div>
+        </div>
+      <div class="col-md-1"></div>
+    </div>

@@ -1,0 +1,30 @@
+//created on: Jun 20, 2018
+package com.sample
+
+//list any import classes here.
+
+import com.sbnz.sbnzproject.model.*;
+import java.util.*;
+
+query "disease symptoms" (Disease $d)
+		generalSymptoms : List() from accumulate (
+				$gSymptom:Symptom(symptomType==SymptomType.GENERAL) from $d.symptoms,
+				collectList($gSymptom)
+				)
+		specificSymptoms : List() from accumulate (
+				$sSymptom:Symptom(symptomType==SymptomType.SPECIFIC) from $d.symptoms,
+				collectList($sSymptom)
+				)		
+end
+
+query "diseases containing symptoms" (List ss)
+		disease : Disease($diseaseSymptoms : symptoms)
+		$symptoms : List() from accumulate (
+				$sym:Symptom($sName:name) from $diseaseSymptoms,
+				collectList($sName)
+				)
+		numOfSym : Number(intValue>=1) from accumulate( 
+          $symptom: Symptom(name memberOf $symptoms) from ss,
+          count($symptom)
+        )
+end
