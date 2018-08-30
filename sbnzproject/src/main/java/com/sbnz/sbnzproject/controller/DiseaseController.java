@@ -57,8 +57,6 @@ public class DiseaseController {
 	private String tokenHeader;
 
 	public User getUser(HttpServletRequest request) {
-		if (tokenHeader == null)
-			System.err.println("jestee!!!!!!!!!!!");
 		String token = request.getHeader(tokenHeader);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
 		return userService.findByUsername(username);

@@ -1,5 +1,5 @@
 //created on: Jun 20, 2018
-package com.sample
+package rules
 
 //list any import classes here.
 
@@ -18,7 +18,7 @@ agenda-group "diseases-group"
 rule "Cold"
 	no-loop
 	lock-on-active true
-	salience ($sdc.salience)
+	salience ($sdc.getSalience()/$sdc.getMaxSymptomNum()*100)
 	when
 		$d : Disease( name == "cold" )
 		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
@@ -44,7 +44,7 @@ end
 rule "Sinus infection without special conditions"
 	no-loop
 	lock-on-active true
-	salience ($sdc.salience)
+	salience ($sdc.getSalience()/$sdc.getMaxSymptomNum()*100)
 	when
 		$d : Disease( name == "sinus infection" )
 		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
@@ -73,7 +73,7 @@ end
 rule "Fever"
 	no-loop
 	lock-on-active true
-	salience ($sdc.salience)
+	salience ($sdc.getSalience()/$sdc.getMaxSymptomNum()*100)
 	when
 		$d : Disease( name == "fever" )
 		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
@@ -100,7 +100,7 @@ end
 rule "Tonsillitis"
 	no-loop
 	lock-on-active true
-	salience ($sdc.salience)
+	salience ($sdc.getSalience()/$sdc.getMaxSymptomNum()*100)
 	when
 		$d : Disease( name == "tonsillitis" )
 		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
@@ -129,19 +129,15 @@ end
 
 //sinusna infekcija sa specijalnim uslovima
 rule "Sinus infection with special conditions"
-	no-loop
-	lock-on-active true
-	salience ($sdc.getSalienceSinusInfectionSpecial())
+	salience ($sdc.getSalience()+2.0/$sdc.getMaxSymptomNum()*100)
 	when
+		$dc : DateChecker() 
 		$d : Disease( name == "sinus infection" )
-		$cold : Disease( name == "cold" )
-		$fever : Disease( name == "fever" )
 		$patient : Patient(  $patientHistory : patientHistory )
 		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
 		
-		
 		Number(intValue >= 1) from accumulate (
-			$oldDiag: MedicalRecord( disease == $cold  || disease == $fever, last60Days() ) from $patientHistory,
+			$oldDiag: MedicalRecord( disease.name=="cold" || disease.name=="fever", $dc.last60Days()<date ) from $patientHistory,
 			init(int count = 0;),
 			action(count++;),
 			result(count)
@@ -159,14 +155,15 @@ rule "Sinus infection with special conditions"
 				name == "cough"
 				
 			) from $symptoms,			
-            init(SalienceDiseaseCheckerSinInf $salCheck = new SalienceDiseaseCheckerSinInf(7);),
+            init(SalienceDiseaseCheckerSinInf $salCheck = new SalienceDiseaseCheckerSinInf(8);),
             action($salCheck.addSymptom();),
             result($salCheck)
 			
 		)
+
 	then
-		modify($mr) {setDisease($d);} 
-		System.out.println("SINUS INFECTION PLUS SPECIAL COND: satisfied " + $sdc.getSalienceSinusInfectionSpecial() + " out of " + $sdc.getMaxSymptomNum() + " symptoms.");
+		modify($mr) {setDisease($d);}
+		System.out.println("SINUS INFECTION PLUS SPECIAL COND: satisfied " + ($sdc.getSalience()+2) + " out of " + $sdc.getMaxSymptomNum() + " symptoms.");
 end
 
 
@@ -175,16 +172,18 @@ end
 rule "Hypertension"
 	no-loop
 	lock-on-active
+	salience 20
 	when
 		// checking for a hypertension
+		$dc : DateChecker() 
 		$d: Disease(name == "hypertension")
 		$patient: Patient($patientHistory: patientHistory)
 		$mr: MedicalRecord($symptoms: symptoms, disease == null)
 		
 		// getting all the symptoms from a medical record earlier than six months
 		$rightTimeSymptoms: List() from accumulate(
-			MedicalRecord(last6Months(), $currSymptoms: symptoms) from $patientHistory,
-			init(List symptomList = new ArrayList<>();),
+			MedicalRecord($dc.last6Months()<date, $currSymptoms: symptoms) from $patientHistory,
+			init(List symptomList = new ArrayList<>(); System.err.println("heeej");),
 			action(symptomList.addAll($currSymptoms);)
 			result(symptomList)
 		)
@@ -230,6 +229,7 @@ end
 //third group of diseases
 rule "Acute kidney injury"
 	when
+		$dc : DateChecker() 
 		$d: Disease(name == "acute kidney injury")
 		$patient : Patient(  $patientHistory : patientHistory )
 		$mr: MedicalRecord($symptoms: symptoms, disease == null)
@@ -260,7 +260,7 @@ rule "Acute kidney injury"
             //temperature for a symptom
 				// getting symptoms in the past 14 days
 				$past14DaysSymptoms: List() from accumulate(
-					MedicalRecord(last14Days(), $pasDis: disease != null) from $patientHistory,
+					MedicalRecord($dc.last14Days()<date, $pasDis: disease != null) from $patientHistory,
 					init(List pasSymps = new ArrayList<>(); ),
 					action(pasSymps.addAll($pasDis.getSymptoms());),
 					result(pasSymps)
@@ -280,7 +280,7 @@ rule "Acute kidney injury"
             (
             	// searching for all medicines
             	$past: List() from accumulate(
-            		MedicalRecord(last21Days(), disease != null, $pastDrugs: medicine) from $patientHistory,
+            		MedicalRecord($dc.last21Days()<date, disease != null, $pastDrugs: medicine) from $patientHistory,
             		init(List pastDrugs = new ArrayList<>();),
             		action(pastDrugs.addAll($pastDrugs);),
             		result(pastDrugs)
@@ -288,7 +288,7 @@ rule "Acute kidney injury"
             	and
             	// does any of medicines is antibiotic
             	Number(intValue >= 1) from accumulate(
-            		Medicine(name == "antibiotic") from $past,
+            		Medicine(medicineType==MedicineType.ANTIBIOTIC) from $past,
             		init(int count = 0;),
             		action(count++;),
             		result(count)
@@ -307,6 +307,7 @@ end
 
 rule "Chronic kidney disease"
 	when
+		$dc : DateChecker() 
 		$d: Disease(name == "chronic kidney disease")
 		$hypertension: Disease(name == "hypertension")
 		$diabetes: Disease(name == "diabetes")
@@ -330,7 +331,7 @@ rule "Chronic kidney disease"
 		(
 			//checking for hypertension, condition: suffering more then 6 months
 			Number(intValue >= 1) from accumulate(
-				MedicalRecord(moreThan6Months(), disease == $hypertension) from $patientHistory,
+				MedicalRecord($dc.moreThan6Months()>date, disease == $hypertension) from $patientHistory,
 				init(int count = 0;),
 				action(count++;),
 				result(count)		

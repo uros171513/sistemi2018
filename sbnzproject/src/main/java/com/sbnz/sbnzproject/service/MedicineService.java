@@ -17,6 +17,6 @@ public interface MedicineService {
 
 	Medicine findById(Long id);
 
-	boolean checkAllergies(Long id, ArrayList<Medicine> medicines, HttpServletRequest request);
+	boolean checkAllergies(Long id, ArrayList<Medicine> medicines, String username);
 
 }

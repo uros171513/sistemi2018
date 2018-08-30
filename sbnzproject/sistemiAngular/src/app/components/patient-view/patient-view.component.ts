@@ -154,6 +154,7 @@ export class PatientViewComponent implements OnInit {
               symptom:s,
               selected:false
             }
+            console.log(selected);
             this.selectedSymptoms.push(selected);
           }
         }

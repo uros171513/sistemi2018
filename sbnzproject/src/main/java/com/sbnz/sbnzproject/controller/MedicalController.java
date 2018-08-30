@@ -1,7 +1,9 @@
 package com.sbnz.sbnzproject.controller;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -57,7 +59,14 @@ public class MedicalController {
 			HttpServletRequest request) {
 
 		User user=getUser(request);
+//
 		medicalRecord.setDate(new Date());
+//		Date now = new Date();
+//		Calendar cal = new GregorianCalendar();
+//		cal.setTime(now);
+//		cal.add(Calendar.MONTH, -8);
+//		Date res = cal.getTime();
+	//	medicalRecord.setDate(res);
 		MedicalRecord md = medicalRecordService.create(medicalRecord, user.getUsername());
 
 		Patient patient = patientService.findById(id);

@@ -6,6 +6,7 @@ import java.util.Collection;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sbnz.sbnzproject.model.Disease;
 import com.sbnz.sbnzproject.model.Symptom;
+import com.sbnz.sbnzproject.model.User;
+import com.sbnz.sbnzproject.security.JwtTokenUtil;
 import com.sbnz.sbnzproject.service.SymptomService;
+import com.sbnz.sbnzproject.service.UserService;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -30,6 +34,21 @@ public class SymptomController {
 
 	@Autowired
 	SymptomService symptomService;
+	
+	@Autowired
+	UserService userService;
+
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+
+	@Value("${jwt.header}")
+	private String tokenHeader;
+
+	public User getUser(HttpServletRequest request) {
+		String token = request.getHeader(tokenHeader);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		return userService.findByUsername(username);
+	}
 
 	@PostMapping(value = "/symptom/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> create(@RequestBody Symptom symptom) {
@@ -71,8 +90,8 @@ public class SymptomController {
 
 	@PostMapping(value = "/symptom/getRelatedSymptoms", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> create(@RequestBody Disease disease, HttpServletRequest request) {
-
-		ArrayList<Symptom> symptoms = symptomService.symptomsByDisease(disease, request);
+		User user=getUser(request);
+		ArrayList<Symptom> symptoms = symptomService.symptomsByDisease(disease, user.getUsername());
 
 		return new ResponseEntity<>(symptoms, HttpStatus.CREATED);
 	}

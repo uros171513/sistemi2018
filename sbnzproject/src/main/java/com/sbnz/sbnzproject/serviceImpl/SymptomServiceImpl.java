@@ -21,6 +21,7 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sbnz.sbnzproject.SbnzprojectApplication;
 import com.sbnz.sbnzproject.model.Disease;
 import com.sbnz.sbnzproject.model.Symptom;
 import com.sbnz.sbnzproject.repository.SymptomRepository;
@@ -70,10 +71,10 @@ public class SymptomServiceImpl implements SymptomService {
     }
 
 	@Override
-	public ArrayList<Symptom> symptomsByDisease(Disease disease, HttpServletRequest request) {
+	public ArrayList<Symptom> symptomsByDisease(Disease disease, String username) {
 		// TODO Auto-generated method stub
 		
-		KieSession kieSession = (KieSession) request.getSession().getAttribute("kieSession");
+		KieSession kieSession = (KieSession) SbnzprojectApplication.kieSessions.get("kieSession-"+username);
 		System.err.println(kieSession);
 		if(kieSession==null) {
 			KieServices ks = KieServices.Factory.get();

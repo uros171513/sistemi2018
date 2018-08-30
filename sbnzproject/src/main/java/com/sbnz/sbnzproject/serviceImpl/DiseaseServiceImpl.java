@@ -23,9 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sbnz.sbnzproject.SbnzprojectApplication;
+import com.sbnz.sbnzproject.model.DateChecker;
 import com.sbnz.sbnzproject.model.Disease;
 import com.sbnz.sbnzproject.model.MedicalRecord;
 import com.sbnz.sbnzproject.model.Patient;
+import com.sbnz.sbnzproject.model.SalienceDiseaseChecker;
+import com.sbnz.sbnzproject.model.SalienceDiseaseCheckerSinInf;
 import com.sbnz.sbnzproject.model.Symptom;
 import com.sbnz.sbnzproject.repository.DiseaseRepository;
 import com.sbnz.sbnzproject.repository.PatientRepository;
@@ -92,7 +95,12 @@ public class DiseaseServiceImpl implements DiseaseService {
 			kieSession = kbase.newKieSession();
 		}
 		
+		kieSession.insert(new DateChecker());
+		kieSession.insert(new SalienceDiseaseChecker());
+		kieSession.insert(new SalienceDiseaseCheckerSinInf());
+		
 		Patient patient=patientRepository.findOne(id);
+		
 		//uzimanje simptoma iz baze
 		ArrayList<Symptom> allSymptoms=(ArrayList<Symptom>) symptomRepository.findAll();
 		ArrayList<Symptom> patientSymptoms=new ArrayList<>();
@@ -105,23 +113,33 @@ public class DiseaseServiceImpl implements DiseaseService {
 			}
 		}
 		
+		kieSession.insert(patient);
+		
 		//dodati medicalRecord-e od tog pacijenta
 		Collection<MedicalRecord> records= patient.getPatientHistory();
-		for(MedicalRecord mr:records)
+		for(MedicalRecord mr:records) {
 			kieSession.insert(mr);
+		}
+			
 		
 		//dodavanje medicalRecord sa tim simptomima i dodavanje svih bolesti
 		MedicalRecord medicalRecord=new MedicalRecord();
-		if(patientSymptoms.size()!=0 && !patient.equals(null)) {
+		if(true) {
 			ArrayList<Disease> diseases = (ArrayList<Disease>) getAll();
-			medicalRecord.getSymptoms().addAll(patientSymptoms);
+			if(patientSymptoms.equals(null)) {
+				System.err.println("yesss");
+				medicalRecord.getSymptoms().addAll(new ArrayList<Symptom>());
+			}
+			else
+				medicalRecord.getSymptoms().addAll(patientSymptoms);
 			medicalRecord.setDisease(null);
 			kieSession.insert(medicalRecord);
 			for (Disease d:diseases) {
 				kieSession.insert(d);
 			}
-			//addAll(kieSession, patientSymptoms, patient, diseases);
 		}
+		
+		
 		//focus na tu grupu pravila
 		kieSession.getAgenda().getAgendaGroup("diseases-group").setFocus();
 		kieSession.fireAllRules();
@@ -156,6 +174,7 @@ public class DiseaseServiceImpl implements DiseaseService {
 			KieBase kbase = kieContainer.newKieBase(kbconf);
 			kieSession = kbase.newKieSession();
 		}
+		kieSession.insert(new DateChecker());
 		List<Disease> diseases=diseaseRepository.findAll();
 		for(Disease d:diseases)
 			kieSession.insert(d);
@@ -179,7 +198,7 @@ public class DiseaseServiceImpl implements DiseaseService {
 		for(Disease d: result.keySet()) {
 			relatedDiseases.add(d);
 		}
-		
+		release(kieSession);
 		return relatedDiseases;
 	}
 }

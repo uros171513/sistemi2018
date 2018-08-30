@@ -127,14 +127,11 @@
                     <div class="input-group mb-2 mr-sm-2 mb-sm-0">                       
                         
                             <div *ngFor="let ss of selectedSymptoms; let i=index; let even = even">
-                              <div *ngIf="even">
+                              <div>
                                   <input  (change)="getSelectedSymptoms()" type="checkbox"
                                   name="symptoms"
-                                  value="{{selectedSymptoms[i].symptom.name}}"
-                                  [(ngModel)]="selectedSymptoms[i].selected"/>{{  selectedSymptoms[i].symptom.name | uppercase}} &nbsp;&nbsp; <input  (change)="getSelectedSymptoms()" type="checkbox"
-                                  name="symptoms"
-                                  value="{{selectedSymptoms[i+1].symptom.name}}"
-                                  [(ngModel)]="selectedSymptoms[i+1].selected"/>{{  selectedSymptoms[i+1].symptom.name | uppercase}} &nbsp;&nbsp;
+                                  value="{{ss.symptom.name}}"
+                                  [(ngModel)]="ss.selected"/>{{  ss.symptom.name | uppercase}} &nbsp;&nbsp;
                               </div>
                             </div>
                           

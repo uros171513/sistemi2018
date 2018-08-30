@@ -10,8 +10,9 @@ import java.util.*;
 query "patients with chronic disease"
 	p : Patient($id : id, $history : patientHistory)
 	d : Disease(name != "cold", name != "fever", $dName : name)
+	$dc : DateChecker() 
 	list : List(size>5) from accumulate (
-		$mr : MedicalRecord(disease.name==$dName && last2Years()) from $history,
+		$mr : MedicalRecord(disease.name==$dName && $dc.last2Years()<date) from $history,
 		collectList($mr)
 	)
 end

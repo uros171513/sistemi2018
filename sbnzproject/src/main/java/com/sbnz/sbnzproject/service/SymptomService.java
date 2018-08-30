@@ -18,6 +18,6 @@ public interface SymptomService {
 
 	Symptom delete(Long id);
 
-	ArrayList<Symptom> symptomsByDisease(Disease disease, HttpServletRequest request);
+	ArrayList<Symptom> symptomsByDisease(Disease disease, String username);
 
 }

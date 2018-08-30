@@ -71,18 +71,6 @@ public class UserServiceImpl implements UserService{
     				SbnzprojectApplication.kieSessions.put("kieSession-"+username, kieSession);
     			if(!SbnzprojectApplication.users.containsKey("currentUser-"+username))
     				SbnzprojectApplication.users.put("currentUser-"+username, user);
-//    			
-//    			for(String s:SbnzprojectApplication.kieSessions.keySet()) {
-//    				System.err.println("*** KieSession kljuc ***");
-//    				System.err.println(s);
-//    				KieSession kss=SbnzprojectApplication.kieSessions.get(s);
-//    				System.err.println("*** KieSession vrednost ***");
-//    				System.err.println(kss);
-//    				System.err.println(kss.getIdentifier());
-//    			}
-//    			
-//    			System.err.println(SbnzprojectApplication.kieSessions.size());
-//    			System.err.println(SbnzprojectApplication.users.size());
     			return true;
 		}
 		return false;

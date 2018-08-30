@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sbnz.sbnzproject.model.Medicine;
 import com.sbnz.sbnzproject.model.MedicineComponent;
 import com.sbnz.sbnzproject.model.Patient;
+import com.sbnz.sbnzproject.model.User;
+import com.sbnz.sbnzproject.security.JwtTokenUtil;
 import com.sbnz.sbnzproject.service.MedicineService;
 import com.sbnz.sbnzproject.service.PatientService;
+import com.sbnz.sbnzproject.service.UserService;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -36,6 +40,21 @@ public class MedicineController {
 
 	@Autowired
 	PatientService patientService;
+	
+	@Autowired
+	UserService userService;
+
+	@Autowired
+	private JwtTokenUtil jwtTokenUtil;
+
+	@Value("${jwt.header}")
+	private String tokenHeader;
+
+	public User getUser(HttpServletRequest request) {
+		String token = request.getHeader(tokenHeader);
+		String username = jwtTokenUtil.getUsernameFromToken(token);
+		return userService.findByUsername(username);
+	}
 
 	@PostMapping(value = "/medicine/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> create(@RequestBody Medicine medicine) {
@@ -79,26 +98,8 @@ public class MedicineController {
 			HttpServletRequest request) {
 		Patient patient=patientService.findById(id);
 		boolean alright=true;
-		
-//		//da li je pacijent alergican na neki od lekova
-//		for(Medicine m: medicines) {
-//			for(Medicine m1:patient.getMedicineAllergies()) {
-//				if(m1.getName().equals(m.getName()))
-//					alright=false;
-//			}
-//		}
-//		
-//		//da li neki od lekova sadrzi komponentu na koju je pacijent alergican
-//		for(Medicine m:medicines) {
-//			for(MedicineComponent c:m.getComponents()) {
-//				for(MedicineComponent c1: patient.getComponentAllergies()) {
-//					if(c1.getName().equals(c.getName()))
-//						alright=false;
-//				}
-//			}
-//			
-//		}
-		alright=medicineService.checkAllergies(id,medicines, request);
+		User user=getUser(request);
+		alright=medicineService.checkAllergies(id,medicines, user.getUsername());
 		return new ResponseEntity<>(alright, HttpStatus.OK);
 	}
 

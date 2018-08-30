@@ -41,6 +41,8 @@ public class PatientServiceImpl implements PatientService {
 	
 	@Autowired
 	MedicineRepository medicineRepository;
+	
+	private final KieContainer kieContainer;
 
 	@Override
 	public Patient create(Patient patient) {
@@ -57,7 +59,6 @@ public class PatientServiceImpl implements PatientService {
 		return patientRepository.getOne(id);
 	}
 
-	private final KieContainer kieContainer;
 
 	@Autowired
 	public PatientServiceImpl(KieContainer kieContainer) {
@@ -86,14 +87,15 @@ public class PatientServiceImpl implements PatientService {
 		for(Disease d:diseases) {
 			kieSession.insert(d);
 		}
-		
+
+		kieSession.insert(new DateChecker());
 		
 		QueryResults results = kieSession.getQueryResults( "patients with chronic disease", "list");
 		System.out.println( "we have " + results.size());
 
 		ArrayList<Patient> foundPatients=new ArrayList<>();
 		ArrayList<Disease> foundDiseases=new ArrayList<>();
-		for ( QueryResultsRow row : results ) {System.err.println("usao u ovo");
+		for ( QueryResultsRow row : results ) {
 		
 		 	Patient p = ( Patient ) row.get( "p" );
 		    Disease d = ( Disease ) row.get( "d" );

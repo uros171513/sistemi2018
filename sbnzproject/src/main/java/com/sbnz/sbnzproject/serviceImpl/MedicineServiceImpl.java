@@ -16,6 +16,7 @@ import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sbnz.sbnzproject.SbnzprojectApplication;
 import com.sbnz.sbnzproject.model.Medicine;
 import com.sbnz.sbnzproject.model.MedicineComponent;
 import com.sbnz.sbnzproject.model.Patient;
@@ -62,8 +63,8 @@ public class MedicineServiceImpl implements MedicineService {
     PatientRepository patientRepository;
 	
 	@Override
-	public boolean checkAllergies(Long id, ArrayList<Medicine> medicines, HttpServletRequest request) {
-		KieSession kieSession = (KieSession) request.getSession().getAttribute("kieSession");
+	public boolean checkAllergies(Long id, ArrayList<Medicine> medicines, String username) {
+		KieSession kieSession = SbnzprojectApplication.kieSessions.get("kieSession-"+username);
 		if(kieSession==null) {
 			KieServices ks = KieServices.Factory.get();
 			KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();

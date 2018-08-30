@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +36,7 @@ public class PatientController {
 
 	@Autowired
 	PatientService patientService;
-	
+
 	@Autowired
 	UserService userService;
 
@@ -53,12 +52,9 @@ public class PatientController {
 		return userService.findByUsername(username);
 	}
 
-
 	@PostMapping(value = "/patient/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> create(@RequestBody Patient patient) {
-
 		Patient p = patientService.create(patient);
-
 		return new ResponseEntity<>(p, HttpStatus.CREATED);
 	}
 
@@ -87,28 +83,25 @@ public class PatientController {
 		Patient updated = patientService.create(p);
 		return new ResponseEntity<>(updated, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/patient/chronic", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getWithChronic(HttpServletRequest request) {
-		User user=getUser(request);
+		User user = getUser(request);
 		ArrayList<Patient> patients = patientService.getWithChronic(user.getUsername());
-		//System.err.println(patients.size());
 		return new ResponseEntity<>(patients, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/patient/addicts", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAddicts(HttpServletRequest request) {
-		User user=getUser(request);
+		User user = getUser(request);
 		ArrayList<Patient> patients = patientService.getAddicts(user.getUsername());
-		//System.err.println(patients.size());
 		return new ResponseEntity<>(patients, HttpStatus.OK);
 	}
-	
+
 	@GetMapping(value = "/patient/weakImmunity", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getWithWeakImmunity(HttpServletRequest request) {
-		User user=getUser(request);
+		User user = getUser(request);
 		ArrayList<Patient> patients = patientService.getWithWeakImmunity(user.getUsername());
-		//System.err.println(patients.size());
 		return new ResponseEntity<>(patients, HttpStatus.OK);
 	}
 }

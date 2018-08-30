@@ -15,8 +15,10 @@ public class SalienceDiseaseCheckerSinInf extends SalienceDiseaseChecker {
     }
 
     public int getSalienceSinusInfectionSpecial(){
-        if(this.specialEvaluated)
+        if(this.specialEvaluated) {
+        	System.err.println(this.salience);
             return this.salience;
+        }
         this.specialEvaluated = true;
         this.addSymptom();
         return this.salience;
