@@ -1,0 +1,76 @@
+package rules
+
+import com.sbnz.sbnzproject.model.*;
+import com.sbnz.sbnzproject.event.*;
+import java.util.*;
+
+agenda-group "monitoring"
+
+rule "oxygen level troubles"
+	agenda-group "oxygen"
+	lock-on-active true
+	when
+ 		$oxEvent: OxygenEvent($patient : patient, $time : executionTime, $ol : oxygenLevel, oxygenLevel<70)
+        not(
+            OxygenEvent(this != $oxEvent, patient == $patient, oxygenLevel>$ol) 
+            over window:time(15m)
+        )
+    then
+    	System.out.println("SO FAR:");
+        insert(new OxygenLevelNotGoodEvent($patient, "NOT GOOD: In the past 15 minutes the oxygen level of a patient "+$patient.getName()+" hasn't been increasing, and the oxygen level is less then 70mmHg. "));
+        drools.halt();
+end
+
+
+rule "heartbeats more then 25"
+	agenda-group "heartbeats"
+	lock-on-active true
+	when
+ 		$hbEvent: HeartbeatEvent($patient : patient, $time : executionTime)
+        list : List(size>25) from accumulate(
+            $hbe:HeartbeatEvent(this != $hbEvent && patient==$patient)
+            over window:time(10s),
+            collectList($hbe)
+        )
+        
+    then
+    	System.out.println("SO FAR:");    	
+        insert(new HeartbeatNotGoodEvent($patient, "NOT GOOD: In the past 10 seconds patient "+$patient.getName()+" has more then 25 heartbeats. "));
+        drools.halt();
+end
+
+rule "patient needs dialysis immediately"
+	agenda-group "dialysis"
+	lock-on-active true
+	when
+		$hbEvent: HeartbeatEvent($patient : patient, $time : executionTime)
+		
+		list : List(size>=1) from accumulate (
+		$mr : MedicalRecord(disease.name=="chronic kidney disease") from $patient.getPatientHistory(),
+		collectList($mr))
+		
+        Number(intValue>10) from accumulate(
+            $hbe:HeartbeatEvent(this != $hbEvent, patient == $patient)
+            over window:time(10s),
+            count($hbe)
+        )
+        
+        $urinating: UrinatingEvent($patient==patient, $initAmount:amount)
+        
+        Number(intValue < 100) from accumulate(
+			$urin: UrinatingEvent(
+				this != $urinating,
+				patient == $patient,
+				$amount: amount,
+				this meets[12h] $urinating
+			),
+			init(int count = $initAmount;),
+			action(count += $amount;),
+			result(count)
+		)
+       
+	then
+		System.out.println("SO FAR:");
+        insert(new DialysisImmediatelyEvent($patient, "NOT GOOD: Patient "+$patient.getName()+" needs dialysis immediately"));
+        drools.halt();
+end

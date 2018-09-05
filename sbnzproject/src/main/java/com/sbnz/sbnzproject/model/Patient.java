@@ -41,6 +41,11 @@ public class Patient {
 		
 	}
 
+	public Patient(long l,String name) {
+		this.id=l;
+		this.name=name;
+	}
+
 	public Long getId() {
 		return id;
 	}

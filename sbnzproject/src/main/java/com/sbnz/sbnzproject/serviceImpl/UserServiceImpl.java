@@ -58,15 +58,12 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public Boolean login(String username, String password) {
 		User user = findByUsername(username);
-		if(user != null){
-				
-//    			KieServices ks = KieServices.Factory.get();
-//    			KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
-//    			kbconf.setOption(EventProcessingOption.STREAM);
-//    			KieBase kbase = kieContainer.newKieBase(kbconf);
-//    			KieSession kieSession = kbase.newKieSession();
-//    			
-			KieSession kieSession = kieContainer.newKieSession();
+		if(user != null) {
+			KieServices ks = KieServices.Factory.get();
+			KieBaseConfiguration kbconf = ks.newKieBaseConfiguration();
+			kbconf.setOption(EventProcessingOption.STREAM);
+			KieBase kbase = kieContainer.newKieBase(kbconf);
+			KieSession kieSession = kbase.newKieSession();
     			if(!SbnzprojectApplication.kieSessions.containsKey("kieSession-"+username))
     				SbnzprojectApplication.kieSessions.put("kieSession-"+username, kieSession);
     			if(!SbnzprojectApplication.users.containsKey("currentUser-"+username))

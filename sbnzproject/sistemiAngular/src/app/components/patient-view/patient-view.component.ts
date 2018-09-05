@@ -130,7 +130,6 @@ export class PatientViewComponent implements OnInit {
     this.relatedSymptoms=[];
     this.modalService.hide(1);
   }
-
   openModal(template: TemplateRef<any>) {
     this.relatedSymptoms=[];
     this.personalOpinionBoolean=false;
