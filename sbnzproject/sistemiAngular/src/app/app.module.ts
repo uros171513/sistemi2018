@@ -23,6 +23,12 @@ import { MedicalService } from './services/medical/medical.service';
 import { ComponentService } from './services/component/component.service';
 import { MedicineService } from './services/medicine/medicine.service';
 import { MedicalRecordComponent } from './components/medical-record/medical-record.component';
+import { MonitoringComponent } from './components/monitoring/monitoring.component';
+import { MngsymptomsComponent } from './components/mngsymptoms/mngsymptoms.component';
+import { MngdoctorsComponent } from './components/mngdoctors/mngdoctors.component';
+import { MngdiseasesComponent } from './components/mngdiseases/mngdiseases.component';
+import { SymptomnewComponent } from './components/symptomnew/symptomnew.component';
+import { DiseasenewComponent } from './components/diseasenew/diseasenew.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +39,13 @@ import { MedicalRecordComponent } from './components/medical-record/medical-reco
     PageNotFoundComponent,
     PatientsComponent,
     PatientViewComponent,
-    MedicalRecordComponent
+    MedicalRecordComponent,
+    MonitoringComponent,
+    MngsymptomsComponent,
+    MngdoctorsComponent,
+    MngdiseasesComponent,
+    SymptomnewComponent,
+    DiseasenewComponent
   ],
   imports: [
     BrowserModule,
@@ -47,6 +59,13 @@ import { MedicalRecordComponent } from './components/medical-record/medical-reco
         { path: 'register', component: RegistrationComponent },
         { path: 'home', component: HomeComponent },
         { path: 'patients', component: PatientsComponent },
+        { path: 'monitoring', component: MonitoringComponent },
+        { path: 'mngdoctors', component: MngdoctorsComponent },
+        { path: 'mngdoctors/register', component: RegistrationComponent },
+        { path: 'mngdiseases', component: MngdiseasesComponent },
+        { path: 'mngdiseases/addNewDisease', component: DiseasenewComponent },
+        { path: 'mngsymptoms', component: MngsymptomsComponent },
+        { path: 'mngsymptoms/addNewSymptom', component: SymptomnewComponent },
         { path: 'patient/:id', component: PatientViewComponent },
         { path: 'medicalRecord/:id', component: MedicalRecordComponent },
         { path: '**', redirectTo:'not-found' }

@@ -1,0 +1,53 @@
+<br>
+<br>
+<br>
+<div class="row">
+    <div class="col-md-12">
+            <h1 style="color:black; border:black; text-align: center"><em>Diseases</em></h1> 
+    </div>       
+</div>
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <br>
+      <br>
+    <div>
+      <a  class="btn btn-info" routerLink="addNewDisease">Add New Disease</a>
+      <br><br>
+
+      <br>
+        <h4 style="color:rgb(100, 00, 50)"><em>Diseases</em></h4>
+        <br>
+      <table class="table" *ngIf="diseases">
+          <thead>
+              <tr>
+                <th style="color:rgb(100, 00, 50)">Name</th>
+                <th></th><th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let disease of diseases; let i=index">
+                  <td>{{disease.name}}</td>
+                  <td><button class="btn btn-info" (click)="openEdit(template, disease.name)">Edit</button></td>
+                  <td><button class="btn btn-info" (click)="delete(disease.id)">Delete</button></td>
+              </tr>
+            </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #template>
+    <div id="editAnnModal" style="align-self: center; align-content: center; width:60em" class="modal-content">
+  
+      <div class="modal-header" style="background-color:cadetblue;color:black; align-items: center">
+        <h5 class="modal-title"><em>Edit information about disease</em></h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+  
+  </div>
+  </ng-template>

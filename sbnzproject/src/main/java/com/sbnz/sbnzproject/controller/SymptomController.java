@@ -79,9 +79,9 @@ public class SymptomController {
 		return new ResponseEntity<>(symptom, HttpStatus.OK);
 	}
 
-	@PutMapping(value = "/symptom/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Symptom symptom) {
-		Symptom s = symptomService.findById(id);
+	@PutMapping(value = "/symptom/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> update(@RequestBody Symptom symptom) {
+		Symptom s = symptomService.findById(symptom.getId());
 		s.setName(symptom.getName());
 		s.setSymptomType(symptom.getSymptomType());
 		Symptom updated = symptomService.create(s);

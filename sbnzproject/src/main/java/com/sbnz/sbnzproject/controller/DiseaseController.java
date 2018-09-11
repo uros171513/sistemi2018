@@ -74,7 +74,6 @@ public class DiseaseController {
 
 	@DeleteMapping(value = "/disease/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> delete(@PathVariable Long id) {
-
 		Disease disease = diseaseService.delete(id);
 		return new ResponseEntity<>(disease, HttpStatus.OK);
 	}
@@ -94,9 +93,9 @@ public class DiseaseController {
 		return new ResponseEntity<>(disease, HttpStatus.OK);
 	}
 
-	@PutMapping(value = "/disease/update/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Disease disease) {
-		Disease d = diseaseService.findById(id);
+	@PutMapping(value = "/disease/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> update(@RequestBody Disease disease) {
+		Disease d = diseaseService.findById(disease.getId());
 		d.setName(disease.getName());
 		d.setDiseaseType(disease.getDiseaseType());
 		d.setSymptoms((Set<Symptom>) disease.getSymptoms());

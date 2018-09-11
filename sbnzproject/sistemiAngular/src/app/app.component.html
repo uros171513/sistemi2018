@@ -34,20 +34,33 @@
           <li *ngIf="getRole()=='DOCTOR'" class="nav-item active">
             <a class="nav-link" style="color:white" routerLink="patients">Patients <span class="sr-only">(current)</span></a>
           </li>
+          <li class="nav-item active">
+            <a class="nav-link" style="color:white" routerLink="monitoring">Monitoring <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item dropdown" *ngIf="getRole()==='ADMIN'">
+            <a class="nav-link dropdown-toggle meeLink" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Manage
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a id="meetingLink" class="dropdown-item" routerLink="mngdoctors">Doctors</a>
+              <div class="dropdown-divider" ></div>
+              <a id="meetingLink" class="dropdown-item" routerLink="mngdiseases">Diseases</a>
+              <div class="dropdown-divider" ></div>
+              <a id="meetingLink" class="dropdown-item" routerLink="mngsymptoms">Symptoms</a>
+            </div>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
-</div>
-<router-outlet></router-outlet>
-
-<div style="text-align:center">
-    <h1>
-      Welcome to {{title}}!
-    </h1>
+  <div style="text-align:center">
     <div class="notif-container">
       <div class="notif">
         <div class="message"></div>
       </div>
     </div>
   </div>
+
+</div>
+<router-outlet></router-outlet>
+

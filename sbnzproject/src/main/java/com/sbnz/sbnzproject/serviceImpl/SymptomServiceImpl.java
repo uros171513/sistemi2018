@@ -59,7 +59,8 @@ public class SymptomServiceImpl implements SymptomService {
 		kieSession.getObjects();
 		
 		for (Object object : kieSession.getObjects()) {
-			kieSession.delete(kieSession.getFactHandle(object));
+			if(!object.getClass().equals(Disease.class))
+				kieSession.delete(kieSession.getFactHandle(object));
 		}
 	}
 	

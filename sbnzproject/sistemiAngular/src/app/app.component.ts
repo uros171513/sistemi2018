@@ -19,25 +19,29 @@ export class AppComponent {
   private serverUrl = 'http://localhost:8000/socket';
   private stompClient;
 
+  isLoggedIn(){
+    return !LoggedUtils.isEmpty();
+  }
+
   constructor(private router:Router,
             private userService:UserService){
-    let ws = new SockJS(this.serverUrl);
-    this.stompClient = Stomp.over(ws);
-    this.stompClient.connect({}, frame =>{
-      this.stompClient.subscribe('/chat', message =>{
-        this.mMessage = message.body;
-        $(".notif").append("<div class='message'>"+message.body+"</div>")
-        console.log(message.body);
-      });
-    });
+              if(this.isLoggedIn){
+                let ws = new SockJS(this.serverUrl);
+                this.stompClient = Stomp.over(ws);
+                this.stompClient.connect({}, frame =>{
+                  this.stompClient.subscribe('/chat', message =>{
+                    this.mMessage = message.body;
+                    $("#card").append("<div class='card-block'>"+message.body+"</div>")
+                    console.log(message.body);
+                  });
+                });
+              }
   }
 
   ngOnInit(){
   }
 
-  isLoggedIn(){
-    return !LoggedUtils.isEmpty();
-  }
+
 
   logout(){
     this.userService.logout().subscribe(data=>{

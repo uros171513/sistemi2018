@@ -1,0 +1,151 @@
+<br>
+<br>
+<br>
+<div class="row">
+    <div class="col-md-12">
+            <h1 style="color:black; border:black; text-align: center"><em>Doctors</em></h1> 
+    </div>       
+</div>
+<div class="row">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <br>
+      <br>
+    <div>
+      <a  class="btn btn-info" routerLink="register">Add New Doctor</a>
+      <br><br>
+
+      <br>
+        <h4 style="color:rgb(100, 00, 50)"><em>Doctors</em></h4>
+        <br>
+      <table class="table" *ngIf="doctors">
+          <thead>
+              <tr>
+                <th style="color:rgb(100, 00, 50)">Name</th>
+                <th style="color:rgb(100, 00, 50)">Lastname</th>
+                <th></th><th></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let doctor of doctors; let i=index">
+                  <td>{{doctor.name}}</td>
+                  <td>{{doctor.lastName}}</td>
+                  <td><button class="btn btn-info" (click)="openEdit(template, doctor.id)">Edit</button></td>
+                  <td><button class="btn btn-info" (click)="delete(doctor.id)">Delete</button></td>
+              </tr>
+            </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #template>
+    <div id="editAnnModal" style="align-self: center; align-content: center; width:60em" class="modal-content">
+  
+      <div class="modal-header" style="background-color:cadetblue;color:black; align-items: center">
+        <h5 class="modal-title"><em>Edit personal informations of a doctor</em></h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+  
+      <div class="modal-body">
+          <form class="form-horizontal" role="form" (ngSubmit)="editDoctor()" #userRegForm="ngForm" >
+              <div class="row">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-6" style="color:black; border:black">
+                    <hr>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-3 field-label-responsive">
+                      
+                  </div>
+                  <div class="col-md-6">
+                        <label for="name">First Name:</label>
+                      <div class="form-group">
+                          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                              <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
+                              <input type="text" name="name" [(ngModel)]="user.name" class="form-control" id="name"
+                                     placeholder="First Name" required autofocus #name="ngModel" required>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3 field-label-responsive">
+                </div>
+                <div class="col-md-6">
+                        <label for="name">Last Name:</label>
+                    <div class="form-group">
+                        <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                            <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
+                            <input type="text" name="lastName"  [(ngModel)]="user.lastName" class="form-control" id="lastName"
+                                   placeholder="Last Name" required autofocus #lastName="ngModel">
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-3 field-label-responsive">
+                     
+                  </div>
+                  <div class="col-md-6">
+                        <label for="username">Username:</label>
+                      <div class="form-group">
+                          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                              <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-at"></i></div>
+                              <input type="text" name="username" [(ngModel)]="user.username" class="form-control" id="username"
+                                     placeholder="username" required autofocus #username="ngModel">
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col-md-3">
+                      <div class="form-control-feedback">
+                              <span class="text-danger align-middle">
+                                  <!-- Put e-mail validation error messages here -->
+                              </span>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-3 field-label-responsive">
+                  </div>
+                  <div class="col-md-6">
+                        <label for="password">Password:</label>
+                      <div class="form-group has-danger">
+                          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                              <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-key"></i></div>
+                              <input type="password" name="password" [(ngModel)]="user.password" class="form-control" id="password"
+                                     placeholder="password" required #password="ngModel">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-3 field-label-responsive">
+                  </div>
+                  <div class="col-md-6">
+                        <label for="repeatedPassword">Repeated Password:</label>
+                      <div class="form-group has-danger">
+                          <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                              <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-key"></i></div>
+                              <input type="password" name="repeatedPassword" [(ngModel)]="repeatedPasswordText" class="form-control" id="repeatedPassword"
+                                     placeholder="repeatedPassword" required #repeatedPassword="ngModel">
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-6">
+                      <button type="submit" class="btn btn-primary btn-md"><i class="fa fa-user-plus"></i>Save</button>
+                  </div>
+              </div>
+          </form>
+    </div>
+  
+  </div>
+  </ng-template>

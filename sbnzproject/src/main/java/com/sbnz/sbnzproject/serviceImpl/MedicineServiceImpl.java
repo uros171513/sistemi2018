@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sbnz.sbnzproject.SbnzprojectApplication;
+import com.sbnz.sbnzproject.model.Disease;
 import com.sbnz.sbnzproject.model.Medicine;
 import com.sbnz.sbnzproject.model.MedicineComponent;
 import com.sbnz.sbnzproject.model.Patient;
@@ -106,7 +107,8 @@ public class MedicineServiceImpl implements MedicineService {
 		kieSession.getObjects();
 		
 		for (Object object : kieSession.getObjects()) {
-			kieSession.delete(kieSession.getFactHandle(object));
+			if(!object.getClass().equals(Disease.class))
+				kieSession.delete(kieSession.getFactHandle(object));
 		}
 	}
 	

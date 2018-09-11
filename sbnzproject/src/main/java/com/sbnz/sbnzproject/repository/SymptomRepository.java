@@ -12,7 +12,7 @@ import com.sbnz.sbnzproject.model.Symptom;
 
 public interface SymptomRepository extends JpaRepository<Symptom, Long> {
 	@Modifying
-	@Query("update Symptom s set s.deleted = false where s.id = ?1")
+	@Query("update Symptom s set s.deleted = true where s.id = ?1")
 	@Transactional
 	void deleteSymptomById(Long id);
 

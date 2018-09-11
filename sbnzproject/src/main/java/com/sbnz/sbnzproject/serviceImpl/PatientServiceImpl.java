@@ -2,7 +2,9 @@ package com.sbnz.sbnzproject.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -66,7 +68,7 @@ public class PatientServiceImpl implements PatientService {
 	}
 
 	@Override
-	public ArrayList<Patient> getWithChronic(String username) {
+	public Set<Patient> getWithChronic(String username) {
 
 		KieSession kieSession = SbnzprojectApplication.kieSessions.get("kieSession-"+username);
 		System.err.println(kieSession);
@@ -83,10 +85,10 @@ public class PatientServiceImpl implements PatientService {
 			kieSession.insert(p);
 		}
 		
-		List<Disease> diseases=diseaseRepository.findAll();
-		for(Disease d:diseases) {
-			kieSession.insert(d);
-		}
+//		List<Disease> diseases=diseaseRepository.findAll();
+//		for(Disease d:diseases) {
+//			kieSession.insert(d);
+//		}
 
 		kieSession.insert(new DateChecker());
 		
@@ -105,23 +107,20 @@ public class PatientServiceImpl implements PatientService {
 			foundPatients.add(p);
 			foundDiseases.add(d);
 		}
-		for(Patient p: foundPatients) {
-			System.err.println(p.getName());
-		}
+		Set<Patient> uniquePatients = new HashSet<Patient>(foundPatients);
 		release(kieSession);
-		return foundPatients;
+		return uniquePatients;
 	}
 
 	public void release(KieSession kieSession) {
-		kieSession.getObjects();
-
 		for (Object object : kieSession.getObjects()) {
-			kieSession.delete(kieSession.getFactHandle(object));
+			if(!object.getClass().equals(Disease.class))
+				kieSession.delete(kieSession.getFactHandle(object));
 		}
 	}
 
 	@Override
-	public ArrayList<Patient> getAddicts(String username) {
+	public Set<Patient> getAddicts(String username) {
 
 		KieSession kieSession = SbnzprojectApplication.kieSessions.get("kieSession-"+username);
 		System.err.println("sesija "+kieSession);
@@ -151,23 +150,16 @@ public class PatientServiceImpl implements PatientService {
 		ArrayList<Patient> foundPatients=new ArrayList<>();
 		for ( QueryResultsRow row : results ) {
 		 	Patient p = ( Patient ) row.get( "p" );
-		 	//Collection<MedicalRecord> records = ( Collection<MedicalRecord> ) row.get( "recordsList" );
-//			Collection<User> ds = ( Collection<User> ) row.get( "doctorsList" );
-//			System.err.println(ds.size());
-//			for(User u:ds)
-//				System.err.println(u.getName());
 			foundPatients.add(p);
 		}
-		for(Patient p: foundPatients) {
-			//System.err.println(p.getName());
-		}
 		release(kieSession);
-		return foundPatients;
+		Set<Patient> uniquePatients = new HashSet<Patient>(foundPatients);
+		return uniquePatients;
 	}
 	
 
 	@Override
-	public ArrayList<Patient> getWithWeakImmunity(String username) {
+	public Set<Patient> getWithWeakImmunity(String username) {
 
 		KieSession kieSession = SbnzprojectApplication.kieSessions.get("kieSession-"+username);
 		System.err.println("sesija "+kieSession);
@@ -199,7 +191,8 @@ public class PatientServiceImpl implements PatientService {
 			foundPatients.add(p);
 		}
 		release(kieSession);
-		return foundPatients;
+		Set<Patient> uniquePatients = new HashSet<Patient>(foundPatients);
+		return uniquePatients;
 	}
 
 }

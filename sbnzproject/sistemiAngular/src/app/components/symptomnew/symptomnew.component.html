@@ -1,0 +1,55 @@
+
+        <br>
+        <br>
+        <br>
+  <div class="container">
+      <form class="form-horizontal" role="form" (ngSubmit)="addNewSymptom()" #userRegForm="ngForm" >
+          <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-6" style="color:black; border:black">
+                <br>
+                <h1><em>Add New Symptom</em></h1>
+                <hr>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-3 field-label-responsive">
+                  
+              </div>
+              <div class="col-md-6">
+                    <label for="name">Symptom Name:</label>
+                  <div class="form-group">
+                      <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                          <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-user"></i></div>
+                          <input type="text" name="name" [(ngModel)]="symptom.name" class="form-control" id="name"
+                                 placeholder="Symptom Name" required autofocus #name="ngModel" required>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+          <div class="row">
+              <div class="col-md-3 field-label-responsive">
+              </div>
+              <div class="col-md-6">
+                <label for="password">Symptom Type:</label>
+          <div class="form-group has-danger">
+              <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+                  <div class="input-group-addon" style="width: 2.6rem"><i class="fa fa-key"></i></div>           
+                    <select required class="form-control" name="type" [(ngModel)]="symptom.symptomType" id="role" #userRole="ngModel">
+                        <option value="GENERAL">GENERAL</option>
+                        <option value="SPECIFIC">SPECIFIC</option>
+                    </select>
+                  </div>
+              </div>
+              </div>
+          </div>
+          
+          <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-6">
+                  <button type="submit" class="btn btn-primary btn-md"><i class="fa fa-user-plus"></i>Add New</button>
+              </div>
+          </div>
+      </form>
+  </div>

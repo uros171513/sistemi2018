@@ -2,6 +2,7 @@ package com.sbnz.sbnzproject.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -87,21 +88,21 @@ public class PatientController {
 	@GetMapping(value = "/patient/chronic", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getWithChronic(HttpServletRequest request) {
 		User user = getUser(request);
-		ArrayList<Patient> patients = patientService.getWithChronic(user.getUsername());
+		Set<Patient> patients = patientService.getWithChronic(user.getUsername());
 		return new ResponseEntity<>(patients, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/patient/addicts", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getAddicts(HttpServletRequest request) {
 		User user = getUser(request);
-		ArrayList<Patient> patients = patientService.getAddicts(user.getUsername());
+		Set<Patient> patients = patientService.getAddicts(user.getUsername());
 		return new ResponseEntity<>(patients, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/patient/weakImmunity", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> getWithWeakImmunity(HttpServletRequest request) {
 		User user = getUser(request);
-		ArrayList<Patient> patients = patientService.getWithWeakImmunity(user.getUsername());
+		Set<Patient> patients = patientService.getWithWeakImmunity(user.getUsername());
 		return new ResponseEntity<>(patients, HttpStatus.OK);
 	}
 }

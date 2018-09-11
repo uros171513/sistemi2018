@@ -34,4 +34,19 @@ export class DiseaseService {
     return this.http.post<Disease>("http://localhost:8000/api/disease/getByName",param,{headers:headers});
   }
 
+  create(disease:Disease):Observable<Disease>{
+    let headers:HttpHeaders = new HttpHeaders({'Content-Type':'application/json;charset=utf-8'});
+    let param = JSON.stringify(disease);
+    return this.http.post<Disease>("http://localhost:8000/api/disease/create",param,{headers:headers});
+  }
+
+  update(disease:Disease):Observable<Disease>{
+    let headers:HttpHeaders = new HttpHeaders({'Content-Type':'application/json;charset=utf-8'});
+    let param = JSON.stringify(disease);
+    return this.http.put<Disease>("http://localhost:8000/api/disease/update",param,{headers:headers});
+  }
+
+  delete(id:any):Observable<Boolean>{
+    return this.http.delete<Boolean>("http://localhost:8000/api/disease/delete/"+id);
+  }
 }

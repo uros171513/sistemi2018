@@ -20,4 +20,6 @@ public interface UserService {
 
 	Boolean logout(String username);
 
+	public void delete(Long id);
+
 }

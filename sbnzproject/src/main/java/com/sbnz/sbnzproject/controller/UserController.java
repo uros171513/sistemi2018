@@ -1,5 +1,6 @@
 package com.sbnz.sbnzproject.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +45,7 @@ public class UserController {
 
 	@Value("${jwt.header}")
 	private String tokenHeader;
-	
+
 	public User getUser(HttpServletRequest request) {
 		String token = request.getHeader(tokenHeader);
 		String username = jwtTokenUtil.getUsernameFromToken(token);
@@ -70,12 +72,12 @@ public class UserController {
 		User user = userService.findByUsername(jwt.getUsername());
 		return new ResponseEntity<>(user, HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping(value = "/user/logout", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> logout(HttpServletRequest request) {
-		User user=getUser(request);
+		User user = getUser(request);
 		Boolean bool = userService.logout(user.getUsername());
-		if(bool)
+		if (bool)
 			return new ResponseEntity<>(bool, HttpStatus.OK);
 		else
 			return new ResponseEntity<>(bool, HttpStatus.NOT_FOUND);
@@ -85,8 +87,13 @@ public class UserController {
 	public ResponseEntity<?> getAll() {
 		logger.info("> getting all users");
 		Collection<User> users = userService.getAll();
-		logger.info("size: {}", users.size());
-		return new ResponseEntity<>(users, HttpStatus.OK);
+		ArrayList<User> users1 = new ArrayList();
+		for (User u : users)
+			if (!u.getRole().equals(UserRole.ADMIN)) {
+				users1.add(u);
+			}
+		logger.info("size: {}", users1.size());
+		return new ResponseEntity<>(users1, HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/user/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -94,18 +101,25 @@ public class UserController {
 		User user = userService.findById(id);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
+	
+	@DeleteMapping(value = "/user/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+		userService.delete(id);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 
 	@PutMapping(value = "/user/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> update(@RequestBody User user, HttpServletRequest request) {
-		String token = request.getHeader(tokenHeader);
-		String username = jwtTokenUtil.getUsernameFromToken(token);
-		User u = userService.findByUsername(username);
+		User u = userService.findById(user.getId());
 		u.setName(user.getName());
 		u.setLastName(user.getLastName());
 		u.setUsername(user.getUsername());
-		PasswordEncoder enc = new BCryptPasswordEncoder();
-		String encoded = enc.encode(user.getPassword());
-		u.setPassword(encoded);
+		if(!user.getPassword().equals("")) {
+			PasswordEncoder enc = new BCryptPasswordEncoder();
+			String encoded = enc.encode(user.getPassword());
+			u.setPassword(encoded);
+		}
+		u.setRole(UserRole.DOCTOR);
 		User updated = userService.create(u);
 		return new ResponseEntity<>(updated, HttpStatus.OK);
 	}

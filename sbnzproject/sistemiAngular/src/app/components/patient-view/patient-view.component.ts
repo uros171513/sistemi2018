@@ -29,6 +29,7 @@ export class PatientViewComponent implements OnInit {
     componentAllergies:[]
   };
   patientId;
+  temperature:number=0;
 
   possibleDisease:Disease={
     name:"",
@@ -131,6 +132,7 @@ export class PatientViewComponent implements OnInit {
     this.modalService.hide(1);
   }
   openModal(template: TemplateRef<any>) {
+    this.temperature=0;
     this.relatedSymptoms=[];
     this.personalOpinionBoolean=false;
     this.verifyMessage="";
@@ -147,7 +149,10 @@ export class PatientViewComponent implements OnInit {
     this.symptomService.getAllSymptoms().subscribe(
       data=>{
         this.symptoms=data;
+        console.log(this.symptoms);
         for(let s of this.symptoms){
+          if(s.name=="temperature goes from 40 to 41"){console.log("jes");continue;}
+          if(s.name=="temperature more than 38"){console.log("jes111");continue;}
           if(!s.deleted){
             let selected={
               symptom:s,
@@ -188,6 +193,24 @@ export class PatientViewComponent implements OnInit {
     var patientsSymptoms:Symptom[]=[];
     for(let s of this.realSelectedSymptoms){
       patientsSymptoms.push(s.symptom);
+    }
+    if(this.temperature!=0){
+      if(this.temperature>38){
+        let s:Symptom={
+          name:"temperature more than 38",
+          symptomType:null,
+          deleted:false
+        }
+        patientsSymptoms.push(s)
+      }
+      if(this.temperature>=40 && this.temperature<42){
+        let s:Symptom={
+          name:"temperature goes from 40 to 41",
+          symptomType:null,
+          deleted:false
+        }
+        patientsSymptoms.push(s)
+      }
     }
     
     this.selectedMedicines=[];
@@ -259,6 +282,26 @@ export class PatientViewComponent implements OnInit {
     for(let s of this.realSelectedSymptoms){
       patientsSymptoms.push(s.symptom);
     }
+
+    if(this.temperature!=0){
+      if(this.temperature>38){
+        let s:Symptom={
+          name:"temperature more than 38",
+          symptomType:null,
+          deleted:false
+        }
+        patientsSymptoms.push(s)
+      }
+      if(this.temperature>=40 && this.temperature<42){
+        let s:Symptom={
+          name:"temperature goes from 40 to 41",
+          symptomType:null,
+          deleted:false
+        }
+        patientsSymptoms.push(s)
+      }
+    }
+
     this.diseaseService.getRelatedDiseases(patientsSymptoms).subscribe(data=>{
       console.log(data);
       this.relatedDiseases=data;

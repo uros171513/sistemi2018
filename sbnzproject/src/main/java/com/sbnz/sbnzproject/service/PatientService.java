@@ -2,6 +2,7 @@ package com.sbnz.sbnzproject.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,10 +16,10 @@ public interface PatientService {
 
 	Patient findById(Long id);
 	
-	ArrayList<Patient> getWithChronic(String username);
+	Set<Patient> getWithChronic(String username);
 
-	ArrayList<Patient> getAddicts(String username);
+	Set<Patient> getAddicts(String username);
 
-	ArrayList<Patient> getWithWeakImmunity(String username);
+	Set<Patient> getWithWeakImmunity(String username);
 
 }

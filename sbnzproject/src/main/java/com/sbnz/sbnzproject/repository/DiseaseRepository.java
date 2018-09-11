@@ -15,7 +15,7 @@ public interface DiseaseRepository extends JpaRepository<Disease, Long> {
 	Disease findByName(String name);
 
 	@Modifying
-    @Query("update Disease d set d.deleted = false where d.id = ?1")
+    @Query("update Disease d set d.deleted = true where d.id = ?1")
     @Transactional
 	void deleteDiseaseById(Long id);
 	

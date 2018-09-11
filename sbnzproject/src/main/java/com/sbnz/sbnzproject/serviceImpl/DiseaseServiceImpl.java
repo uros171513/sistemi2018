@@ -125,18 +125,21 @@ public class DiseaseServiceImpl implements DiseaseService {
 		//dodavanje medicalRecord sa tim simptomima i dodavanje svih bolesti
 		MedicalRecord medicalRecord=new MedicalRecord();
 		if(true) {
-			ArrayList<Disease> diseases = (ArrayList<Disease>) getAll();
+//			ArrayList<Disease> diseases = (ArrayList<Disease>) getAll();
 			if(patientSymptoms.equals(null)) {
 				System.err.println("yesss");
 				medicalRecord.getSymptoms().addAll(new ArrayList<Symptom>());
 			}
-			else
+			else {
+				for(Symptom s:patientSymptoms)
+					System.err.println(s.getName());
 				medicalRecord.getSymptoms().addAll(patientSymptoms);
+			}
 			medicalRecord.setDisease(null);
 			kieSession.insert(medicalRecord);
-			for (Disease d:diseases) {
-				kieSession.insert(d);
-			}
+//			for (Disease d:diseases) {
+//				kieSession.insert(d);
+//			}
 		}
 		
 		
@@ -150,16 +153,10 @@ public class DiseaseServiceImpl implements DiseaseService {
 		return medicalRecord;
 	}
 
-	public void addAll(KieSession kieSession, ArrayList<Symptom> symptoms, Patient patient,
-			ArrayList<Disease> diseases) {
-		//stavljam sve bolesti
-	}
-	
 	public void release(KieSession kieSession){
-		kieSession.getObjects();
-		
 		for (Object object : kieSession.getObjects()) {
-			kieSession.delete(kieSession.getFactHandle(object));
+			if(!object.getClass().equals(Disease.class))
+				kieSession.delete(kieSession.getFactHandle(object));
 		}
 	}
 	
@@ -175,9 +172,9 @@ public class DiseaseServiceImpl implements DiseaseService {
 			kieSession = kbase.newKieSession();
 		}
 		kieSession.insert(new DateChecker());
-		List<Disease> diseases=diseaseRepository.findAll();
-		for(Disease d:diseases)
-			kieSession.insert(d);
+//		List<Disease> diseases=diseaseRepository.findAll();
+//		for(Disease d:diseases)
+//			kieSession.insert(d);
 		QueryResults results = kieSession.getQueryResults( "diseases containing symptoms", new Object[] { symptoms } );
 		System.out.println( "we have " + results.size());
 
