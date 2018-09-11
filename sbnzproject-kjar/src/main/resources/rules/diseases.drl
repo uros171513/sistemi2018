@@ -112,7 +112,7 @@ rule "Tonsillitis"
 				name == "temperature goes from 40 to 41" ||
 				name == "pain which is spreading right to the ears" ||
 				name == "loss of appetite" ||
-				name == "tiredness" ||
+				name == "lassitude" ||
 				name == "yellow secretion from nose"
 				
 			) from $symptoms,			
@@ -129,19 +129,14 @@ end
 
 //sinusna infekcija sa specijalnim uslovima
 rule "Sinus infection with special conditions"
+	no-loop
+	lock-on-active true
 	salience ($sdc.getSalience()+2.0/$sdc.getMaxSymptomNum()*100)
 	when
 		$dc : DateChecker() 
 		$d : Disease( name == "sinus infection" )
 		$patient : Patient(  $patientHistory : patientHistory )
 		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
-		
-		Number(intValue >= 1) from accumulate (
-			$oldDiag: MedicalRecord( disease.name=="cold" || disease.name=="fever", $dc.last60Days()<date ) from $patientHistory,
-			init(int count = 0;),
-			action(count++;),
-			result(count)
-		)
 		
 		//special satisfied, now we need 3 more symptoms to conclude that it
 		//is a sinus infection
@@ -204,10 +199,11 @@ end
 rule "Diabetes"
     no-loop
 	lock-on-active true
+	salience 100
     when
         $d : Disease( name == "diabetes")
 		$mr : MedicalRecord (disease == null , $symptoms: symptoms)
-		Number(intValue >=4) from accumulate(
+		Number(intValue>=4) from accumulate(
             $symptom: Symptom(
             	name == "often urinating"	||
             	name == "loss of body weight" 	||
